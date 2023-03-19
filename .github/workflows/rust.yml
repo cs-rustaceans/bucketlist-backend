@@ -25,5 +25,6 @@ jobs:
     - name: Deploy to laurcons.ro
       uses: distributhor/workflow-webhook@v2
       env:
-        webhook_url: 
+        webhook_url: ${{ secrets.WEBHOOK_URL }}
+        webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
     
