@@ -1,0 +1,29 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build
+      run: cargo check --verbose
+    
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy to laurcons.ro
+      uses: distributhor/workflow-webhook@v2
+      env:
+        webhook_url: 
+    
