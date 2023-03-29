@@ -1,4 +1,4 @@
-use std::{net::{TcpListener, TcpStream}, io::{Write, BufReader, BufRead}, collections::HashMap, error::Error};
+use std::{net::{TcpListener, TcpStream}, io::{Write, BufReader, BufRead}, collections::HashMap, error::Error, env};
 
 struct ReqHead {
     proto: String,
@@ -57,11 +57,17 @@ fn handle_connection(conn: &mut TcpStream) -> Result<(), Box<dyn Error>> {
 }
 
 fn main() {
+    let port;
+    match env::var("PORT") {
+        Ok(val) => port = val.parse::<i32>().unwrap(),
+        Err(_) => port = 1235,
+    }
+
     let listener = 
-        TcpListener::bind("127.0.0.1:1235")
+        TcpListener::bind(format!("127.0.0.1:{port}"))
         .expect("Could not open port");
 
-    println!("Opened port 1235");
+    println!("Opened port {port}");
     for conn in listener.incoming() {
         let mut conn = conn.expect("Error opening connection");
         println!(">>>>> Handling connection");
