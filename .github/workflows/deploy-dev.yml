@@ -1,26 +1,26 @@
-name: Rust Deploy
+name: Rust Dev Deploy
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev" ]
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
   check:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Build
+    - name: Check Rust
       run: cargo check --verbose
     
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Deploy to laurcons.ro
+    - name: Deploy to api.dev.csse.laurcons.ro
       uses: distributhor/workflow-webhook@v2
       env:
         webhook_url: ${{ secrets.WEBHOOK_URL }}
