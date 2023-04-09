@@ -47,9 +47,9 @@ The following DTO's are defined, to e used when interacting with the API provide
 
 The following endpoints are exposed by the application:
 
-- `GET /admin/users -> List<User>`
+- `GET /admin/users`
   - Does not require anything in the Request body.
-  - Returns a `List` containing all the users of the application in the Response body. 
+  - Returns a `List` containing all the users(`User`) of the application in the Response body. 
 
 - `POST /admin/users`
   - Requires a `NewUser` in the Request body
