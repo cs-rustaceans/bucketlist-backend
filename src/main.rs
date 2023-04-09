@@ -1,79 +1,55 @@
-use std::{net::{TcpListener, TcpStream}, io::{Write, BufReader, BufRead}, collections::HashMap, error::Error, env};
+mod db;
+mod handlers;
+mod model;
+mod service;
+use crate::handlers::{login_handlers, user_handlers};
+use actix_cors::Cors;
+use actix_web::{web, App, HttpServer};
+use diesel::mysql::MysqlConnection;
+use diesel::r2d2::ConnectionManager;
+use dotenv::dotenv;
+use r2d2;
+use std::env;
 
-struct ReqHead {
-    proto: String,
-    method: String,
-    path: String,
-}
-
-fn handle_connection(conn: &mut TcpStream) -> Result<(), Box<dyn Error>> {
-    let buf_read = BufReader::new(conn.try_clone()?);
-    let mut headers: HashMap<String, String> = HashMap::new();
-    let mut req_head: ReqHead;
-
-    for (idx, line) in buf_read.lines().enumerate() {
-        let line = line.expect("Couldn't read line from conn");
-
-        if line.is_empty() {
-            break;
-        }
-
-        if idx == 0 {
-            // this is the req line
-            let parts: Vec<&str> = line.split(' ').collect();
-            assert_eq!(parts.len(), 3);
-            req_head = ReqHead {
-                method: parts.get(0).unwrap().to_string(),
-                path: parts.get(1).unwrap().to_string(),
-                proto: parts.get(2).unwrap().to_string(),
-            };
-            println!("{}: {} on path {}", req_head.proto, req_head.method, req_head.path);
-            continue;
-        }
-        // parse a header
-        let parts: Vec<&str> = line.split(':').map(|s| s.trim()).collect();
-        headers.insert(
-            parts.get(0).unwrap().to_ascii_lowercase(),
-            parts.get(1).unwrap().to_string());
-
-    }
-
-    println!("Received {} headers", headers.len());
-
-    let mut message: String = String::from("Hello! This is a demo Rust app that responds to HTTP requests. Just for fun, here are your headers:<ul>");
-    for (key, value) in headers {
-        message.push_str(format!("<li>{}: {}</li>", key, value).as_str());
-    }
-    message.push_str("</ul>Thank you!");
-    conn.write(
-            format!("HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: {}\n\n{}\n", message.len(), message).as_bytes()
-        )
-        ?;
-
-    conn.flush()?;
-    // conn.shutdown(std::net::Shutdown::Both).unwrap();
-    println!("<<<<< Connection terminated");
-    return Ok(());
-}
-
-fn main() {
-    let port;
-    match env::var("PORT") {
-        Ok(val) => port = val.parse::<i32>().unwrap(),
-        Err(_) => port = 1235,
-    }
-
-    let listener = 
-        TcpListener::bind(format!("127.0.0.1:{port}"))
-        .expect("Could not open port");
-
-    println!("Opened port {port}");
-    for conn in listener.incoming() {
-        let mut conn = conn.expect("Error opening connection");
-        println!(">>>>> Handling connection");
-        match handle_connection(&mut conn) {
-            Ok(v) => v,
-            Err(err) => println!("<<<<<! Error handling connection: {}", err),
-        }
-    }
+#[actix_web::main]
+async fn main() -> Result<(), std::io::Error> {
+    dotenv().ok();
+    let pool = r2d2::Pool::builder()
+        .build(ConnectionManager::<MysqlConnection>::new(
+            env::var("DATABASE_URL").expect("DATABASE_URL should be set"),
+        ))
+        .expect("Unexpected error getting a pool");
+    HttpServer::new(move || {
+        let cors = Cors::default().allow_any_origin().send_wildcard();
+        App::new()
+            .wrap(cors)
+            .app_data(web::Data::new(pool.clone()))
+            .service(
+                web::scope("/admin/users")
+                    .service(
+                        web::resource("")
+                            .route(web::get().to(user_handlers::get_all_users))
+                            .route(web::post().to(user_handlers::create_user)),
+                    )
+                    .service(
+                        web::resource("/{id}")
+                            .route(web::get().to(user_handlers::get_user))
+                            .route(web::patch().to(user_handlers::update_user))
+                            .route(web::delete().to(user_handlers::delete_user)),
+                    ),
+            )
+            .service(
+                web::scope("/login")
+                    .service(web::resource("").route(web::get().to(login_handlers::login))),
+            )
+    })
+    .bind((
+        "127.0.0.1",
+        env::var("PORT")
+            .unwrap_or(String::from("8080"))
+            .parse::<u16>()
+            .expect("Error parsing port"),
+    ))?
+    .run()
+    .await
 }
