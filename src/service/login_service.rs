@@ -1,4 +1,3 @@
-use crate::db::schema::users;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
 use crate::model::login_form::LoginForm;
@@ -6,7 +5,6 @@ use crate::model::user::User;
 use actix_web::web;
 use bcrypt::verify;
 use diesel::prelude::*;
-use std::fmt;
 
 pub async fn login(
     db_pool: web::Data<DbPool>,

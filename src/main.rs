@@ -40,7 +40,13 @@ async fn main() -> Result<(), std::io::Error> {
                     .service(web::resource("").route(web::get().to(login_handlers::login))),
             )
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind((
+        "127.0.0.1",
+        env::var("PORT")
+            .unwrap_or(String::from("8080"))
+            .parse::<u16>()
+            .expect("Error parsing port"),
+    ))?
     .run()
     .await
 }

@@ -1,9 +1,7 @@
 use crate::db::DbPool;
 use crate::model::login_form::LoginForm;
 use crate::service::login_service;
-use actix_web::http::header::ContentType;
 use actix_web::web;
-use actix_web::HttpResponse;
 
 pub async fn login(
     pool: web::Data<DbPool>,
