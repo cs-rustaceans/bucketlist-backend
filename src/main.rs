@@ -3,6 +3,7 @@ mod handlers;
 mod model;
 mod service;
 use crate::handlers::{login_handlers, user_handlers};
+use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use diesel::mysql::MysqlConnection;
 use diesel::r2d2::ConnectionManager;
@@ -19,7 +20,9 @@ async fn main() -> Result<(), std::io::Error> {
         ))
         .expect("Unexpected error getting a pool");
     HttpServer::new(move || {
+        let cors = Cors::default().allow_any_origin().send_wildcard();
         App::new()
+            .wrap(cors)
             .app_data(web::Data::new(pool.clone()))
             .service(
                 web::scope("/admin/users")
