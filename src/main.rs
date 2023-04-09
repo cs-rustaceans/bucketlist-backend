@@ -20,7 +20,7 @@ async fn main() -> Result<(), std::io::Error> {
         ))
         .expect("Unexpected error getting a pool");
     HttpServer::new(move || {
-        let cors = Cors::default().allow_any_origin().send_wildcard();
+        let cors = Cors::permissive();
         App::new()
             .wrap(cors)
             .app_data(web::Data::new(pool.clone()))
