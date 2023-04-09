@@ -40,7 +40,7 @@ async fn main() -> Result<(), std::io::Error> {
             )
             .service(
                 web::scope("/login")
-                    .service(web::resource("").route(web::get().to(login_handlers::login))),
+                    .service(web::resource("").route(web::post().to(login_handlers::login))),
             )
     })
     .bind((
