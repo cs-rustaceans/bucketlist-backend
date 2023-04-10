@@ -1,5 +1,5 @@
 use crate::db::DbPool;
-use crate::model::login_form::LoginForm;
+use crate::dto::login_form::LoginForm;
 use crate::service::login_service;
 use actix_web::web;
 

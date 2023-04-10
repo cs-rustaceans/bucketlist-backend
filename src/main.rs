@@ -2,6 +2,7 @@ mod db;
 mod handlers;
 mod model;
 mod service;
+mod dto;
 use crate::handlers::{login_handlers, user_handlers};
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};

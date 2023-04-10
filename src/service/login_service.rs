@@ -1,6 +1,6 @@
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
-use crate::model::login_form::LoginForm;
+use crate::dto::login_form::LoginForm;
 use crate::model::user::User;
 use actix_web::web;
 use bcrypt::verify;
