@@ -67,7 +67,7 @@ The following endpoints are exposed by the application:
   - Does not require anything in the Request body
   - Does not return anything in the Response body
 
-- `GET /login`
+- `POST /login`
   - Requires a `LoginForm` in the Request body
   - Returns a `String` with the role of the specified user in the Response body.
 
