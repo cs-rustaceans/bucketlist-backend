@@ -1,11 +1,9 @@
 mod db;
-mod handlers;
-mod model;
+mod routes;
 mod service;
 mod dto;
-mod errors;
 mod applib;
-use crate::handlers::{login_handlers, user_handlers};
+use crate::routes::{login, user};
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use diesel::mysql::MysqlConnection;
@@ -35,19 +33,19 @@ async fn main() -> Result<(), std::io::Error> {
                 web::scope("/admin/users")
                     .service(
                         web::resource("")
-                            .route(web::get().to(user_handlers::get_all_users))
-                            .route(web::post().to(user_handlers::create_user)),
+                            .route(web::get().to(user::get_all_users))
+                            .route(web::post().to(user::create_user)),
                     )
                     .service(
                         web::resource("/{id}")
-                            .route(web::get().to(user_handlers::get_user))
-                            .route(web::patch().to(user_handlers::update_user))
-                            .route(web::delete().to(user_handlers::delete_user)),
+                            .route(web::get().to(user::get_user))
+                            .route(web::patch().to(user::update_user))
+                            .route(web::delete().to(user::delete_user)),
                     ),
             )
             .service(
                 web::scope("/login")
-                    .service(web::resource("").route(web::post().to(login_handlers::login))),
+                    .service(web::resource("").route(web::post().to(login::login))),
             )
     })
     .bind((

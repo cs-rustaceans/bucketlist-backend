@@ -1,8 +1,8 @@
+use crate::db::model::user::User;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
 use crate::dto::login_form::LoginForm;
-use crate::errors::AppError;
-use crate::model::user::User;
+use crate::applib::errors::AppError;
 use actix_web::web;
 use bcrypt::verify;
 use diesel::prelude::*;

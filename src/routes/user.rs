@@ -1,5 +1,5 @@
 use crate::db::DbPool;
-use crate::model::user::{NewUser, User};
+use crate::db::model::user::{NewUser, User};
 use crate::service::user_service;
 use actix_web::http::header::ContentType;
 use actix_web::web;

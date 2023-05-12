@@ -1,7 +1,7 @@
 use crate::db::schema::users;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
-use crate::model::user::{NewUser, User};
+use crate::db::model::user::{NewUser, User};
 use actix_web::web;
 use bcrypt::{hash, DEFAULT_COST};
 use diesel::prelude::*;
