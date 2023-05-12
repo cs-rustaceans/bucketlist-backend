@@ -6,8 +6,7 @@ use actix_web::web;
 pub async fn login(
     pool: web::Data<DbPool>,
     login_form_json: web::Json<LoginForm>,
-) -> Result<String, actix_web::error::Error> {
+) -> Result<String, impl actix_web::ResponseError> {
     login_service::login(pool, login_form_json)
         .await
-        .map_err(|error| actix_web::error::ErrorImATeapot(error))
 }
