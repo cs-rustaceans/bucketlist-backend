@@ -11,13 +11,13 @@ pub struct AppError {
 }
 
 impl AppError {
-  fn new(status: StatusCode, code: String, message: String) -> Self {
-    Self {
-      status,
-      code,
-      message,
-    }
-  }
+  // fn new(status: StatusCode, code: String, message: String) -> Self {
+  //   Self {
+  //     status,
+  //     code,
+  //     message,
+  //   }
+  // }
 
   pub fn internal_server_error() -> Self {
     Self {

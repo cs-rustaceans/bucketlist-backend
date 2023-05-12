@@ -323,6 +323,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "bucketlist-backend"
+version = "0.1.0"
+dependencies = [
+ "actix-cors",
+ "actix-web",
+ "bcrypt",
+ "diesel",
+ "dotenv",
+ "r2d2",
+ "serde",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "byteorder"
 version = "1.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -578,21 +593,6 @@ name = "hashbrown"
 version = "0.12.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8a9ee70c43aaf417c914396645a0fa852624801b24ebb7ae78fe8272889ac888"
-
-[[package]]
-name = "hello-web"
-version = "0.1.0"
-dependencies = [
- "actix-cors",
- "actix-web",
- "bcrypt",
- "diesel",
- "dotenv",
- "r2d2",
- "serde",
- "serde_json",
- "tokio",
-]
 
 [[package]]
 name = "hermit-abi"

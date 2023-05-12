@@ -4,23 +4,28 @@ mod model;
 mod service;
 mod dto;
 mod errors;
+mod applib;
 use crate::handlers::{login_handlers, user_handlers};
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use diesel::mysql::MysqlConnection;
 use diesel::r2d2::ConnectionManager;
 use dotenv::dotenv;
+use applib::config::Config;
 use r2d2;
-use std::env;
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-    dotenv().ok();
+    dotenv().expect("Could not load configuration");
+    
+    let config = Config::new();
+
     let pool = r2d2::Pool::builder()
         .build(ConnectionManager::<MysqlConnection>::new(
-            env::var("DATABASE_URL").expect("DATABASE_URL should be set"),
+            config.database_url(),
         ))
         .expect("Unexpected error getting a pool");
+
     HttpServer::new(move || {
         let cors = Cors::permissive();
         App::new()
@@ -47,10 +52,7 @@ async fn main() -> Result<(), std::io::Error> {
     })
     .bind((
         "127.0.0.1",
-        env::var("PORT")
-            .unwrap_or(String::from("8080"))
-            .parse::<u16>()
-            .expect("Error parsing port"),
+        config.port(),
     ))?
     .run()
     .await
