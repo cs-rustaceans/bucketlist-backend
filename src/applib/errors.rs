@@ -31,7 +31,7 @@ impl AppError {
     Self {
       status: StatusCode::NOT_FOUND,
       code: "NotFound".to_string(),
-      message: format!("The requested entity{} was not found.", entity.map(|o| " ".to_owned() + &o).unwrap_or("".to_string())),
+      message: format!("The requested entity {} was not found.", entity.map(|o| " ".to_owned() + &o).unwrap_or("".to_string())),
     }
   }
 
