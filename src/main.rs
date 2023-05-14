@@ -1,24 +1,29 @@
 mod db;
-mod handlers;
-mod model;
+mod routes;
 mod service;
-use crate::handlers::{login_handlers, user_handlers};
+mod dto;
+mod applib;
+use crate::routes::{login, user};
 use actix_cors::Cors;
 use actix_web::{web, App, HttpServer};
 use diesel::mysql::MysqlConnection;
 use diesel::r2d2::ConnectionManager;
 use dotenv::dotenv;
+use applib::config::Config;
 use r2d2;
-use std::env;
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-    dotenv().ok();
+    dotenv().expect("Could not load configuration");
+    
+    let config = Config::new();
+
     let pool = r2d2::Pool::builder()
         .build(ConnectionManager::<MysqlConnection>::new(
-            env::var("DATABASE_URL").expect("DATABASE_URL should be set"),
+            config.database_url(),
         ))
         .expect("Unexpected error getting a pool");
+
     HttpServer::new(move || {
         let cors = Cors::permissive();
         App::new()
@@ -28,27 +33,24 @@ async fn main() -> Result<(), std::io::Error> {
                 web::scope("/admin/users")
                     .service(
                         web::resource("")
-                            .route(web::get().to(user_handlers::get_all_users))
-                            .route(web::post().to(user_handlers::create_user)),
+                            .route(web::get().to(user::get_all_users))
+                            .route(web::post().to(user::create_user)),
                     )
                     .service(
                         web::resource("/{id}")
-                            .route(web::get().to(user_handlers::get_user))
-                            .route(web::patch().to(user_handlers::update_user))
-                            .route(web::delete().to(user_handlers::delete_user)),
+                            .route(web::get().to(user::get_user))
+                            .route(web::patch().to(user::update_user))
+                            .route(web::delete().to(user::delete_user)),
                     ),
             )
             .service(
                 web::scope("/login")
-                    .service(web::resource("").route(web::post().to(login_handlers::login))),
+                    .service(web::resource("").route(web::post().to(login::login))),
             )
     })
     .bind((
         "127.0.0.1",
-        env::var("PORT")
-            .unwrap_or(String::from("8080"))
-            .parse::<u16>()
-            .expect("Error parsing port"),
+        config.port(),
     ))?
     .run()
     .await
