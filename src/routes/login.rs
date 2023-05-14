@@ -7,6 +7,5 @@ pub async fn login(
     pool: web::Data<DbPool>,
     login_form_json: web::Json<LoginForm>,
 ) -> Result<String, impl actix_web::ResponseError> {
-    login_service::login(pool, login_form_json)
-        .await
+    login_service::login(pool, login_form_json).await
 }

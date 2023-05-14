@@ -1,8 +1,8 @@
+use crate::applib::errors::AppError;
+use crate::db::model::user::{NewUser, User};
 use crate::db::schema::users;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
-use crate::db::model::user::{NewUser, User};
-use crate::applib::errors::AppError;
 use actix_web::web;
 use bcrypt::{hash, DEFAULT_COST};
 use diesel::prelude::*;
@@ -81,9 +81,10 @@ pub async fn get_user_by_id(db_pool: web::Data<DbPool>, user_id: u64) -> Result<
     .await;
 
     match result {
-        Ok(Ok(mut result_users)) => result_users
-            .pop()
-            .map_or(Err(AppError::not_found(Some(String::from("user")))), |user| Ok(user)),
+        Ok(Ok(mut result_users)) => result_users.pop().map_or(
+            Err(AppError::not_found(Some(String::from("user")))),
+            |user| Ok(user),
+        ),
         Ok(Err(inner_error)) => Err(inner_error),
         Err(_) => Err(AppError::internal_server_error()),
     }
