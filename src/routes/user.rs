@@ -71,6 +71,6 @@ pub async fn create_user(
     if let Err(error) = result {
         return Err(error);
     } else {
-        return Ok(HttpResponse::Ok().into());
+        return Ok(HttpResponse::Created().into());
     }
 }
