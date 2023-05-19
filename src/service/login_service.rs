@@ -1,8 +1,8 @@
+use crate::applib::errors::AppError;
 use crate::db::model::user::User;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
 use crate::dto::login_form::LoginForm;
-use crate::applib::errors::AppError;
 use actix_web::web;
 use bcrypt::verify;
 use diesel::prelude::*;
@@ -37,7 +37,7 @@ pub async fn login(
             return Err(AppError::invalid_email_password());
         }
     })
-    .await; 
+    .await;
 
     match result {
         Ok(inner_result) => inner_result.map_err(|error| error),
