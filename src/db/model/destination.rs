@@ -1,5 +1,5 @@
 use crate::db::schema::destinations;
-use diesel::{Insertable, Queryable};
+use diesel::{AsChangeset, Insertable, Queryable};
 use serde::{Deserialize, Serialize};
 
 #[derive(Queryable, Serialize, Deserialize)]
@@ -25,4 +25,17 @@ pub struct NewDestination {
   pub name: String,
   pub latitude: f64,
   pub longitude: f64,
+}
+
+#[derive(AsChangeset, Serialize, Deserialize)]
+#[diesel(table_name = destinations)]
+pub struct UpdateDestination {
+  #[column_name = "ownerId"]
+  pub owner_id: Option<u64>,
+  pub visibility: Option<String>,
+  #[column_name = "isReviewed"]
+  pub is_reviewed: Option<bool>,
+  pub name: Option<String>,
+  pub latitude: Option<f64>,
+  pub longitude: Option<f64>,
 }

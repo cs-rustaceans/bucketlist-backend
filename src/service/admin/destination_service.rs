@@ -1,5 +1,5 @@
 use crate::applib::errors::AppError;
-use crate::db::model::destination::{Destination, NewDestination};
+use crate::db::model::destination::{Destination, NewDestination, UpdateDestination};
 use crate::db::schema::destinations;
 use crate::db::schema::destinations::dsl::*;
 use crate::db::DbPool;
@@ -100,6 +100,36 @@ pub async fn admin_create_destination(
 
     diesel::insert_into(destinations::table)
       .values(&new_destination)
+      .execute(&mut db_connection)
+      .map(|_| ())
+      .map_err(|_| AppError::internal_server_error())
+  })
+  .await;
+
+  match result {
+    Ok(inner_result) => inner_result,
+    Err(_) => Err(AppError::internal_server_error()),
+  }
+}
+
+pub async fn admin_update_destination_by_id(
+  db_pool: web::Data<DbPool>,
+  destination_id: u64,
+  update_destination_json: web::Json<UpdateDestination>,
+) -> Result<(), AppError> {
+  let update_destination: UpdateDestination = update_destination_json.into_inner();
+
+  let result = web::block(move || {
+    let mut db_connection;
+
+    if let Ok(connection) = db_pool.get() {
+      db_connection = connection;
+    } else {
+      return Err(AppError::internal_server_error());
+    }
+
+    diesel::update(destinations.filter(id.eq(destination_id)))
+      .set(update_destination)
       .execute(&mut db_connection)
       .map(|_| ())
       .map_err(|_| AppError::internal_server_error())

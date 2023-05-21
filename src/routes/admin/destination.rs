@@ -1,6 +1,7 @@
 use crate::applib::errors::AppError;
 use crate::db::model::destination::Destination;
 use crate::db::model::destination::NewDestination;
+use crate::db::model::destination::UpdateDestination;
 use crate::db::DbPool;
 use crate::service::admin::destination_service;
 use actix_web::http::header::ContentType;
@@ -72,6 +73,24 @@ async fn create_destination(
   }
 }
 
+async fn update_destination_by_id(
+  pool: web::Data<DbPool>,
+  destination_id: web::Path<u64>,
+  update_destination_json: web::Json<UpdateDestination>,
+) -> Result<HttpResponse, impl actix_web::ResponseError> {
+  let result: Result<(), AppError> = destination_service::admin_update_destination_by_id(
+    pool,
+    *destination_id,
+    update_destination_json,
+  )
+  .await;
+  if let Err(error) = result {
+    return Err(error);
+  } else {
+    return Ok(HttpResponse::Ok().into());
+  }
+}
+
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
   cfg
     .service(
@@ -80,5 +99,9 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route(web::post().to(create_destination)),
     )
     .service(web::resource("/unreviewed").route(web::get().to(get_all_unreviewed_destinations)))
-    .service(web::resource("/{id}").route(web::get().to(get_destination_by_id)));
+    .service(
+      web::resource("/{id}")
+        .route(web::get().to(get_destination_by_id))
+        .route(web::patch().to(update_destination_by_id)),
+    );
 }
