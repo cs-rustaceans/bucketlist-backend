@@ -7,8 +7,8 @@ diesel::table! {
         visibility -> Varchar,
         isReviewed -> Bool,
         name -> Varchar,
-        latitude -> Nullable<Float>,
-        longitude -> Nullable<Float>,
+        latitude -> Float,
+        longitude -> Float,
     }
 }
 

@@ -5,8 +5,8 @@ CREATE TABLE destinations (
   visibility VARCHAR(255) NOT NULL,
   isReviewed BOOLEAN NOT NULL,
   name VARCHAR(255) NOT NULL,
-  latitude FLOAT,
-  longitude FLOAT
+  latitude FLOAT NOT NULL,
+  longitude FLOAT NOT NULL
 );
 
 ALTER TABLE destinations ADD FOREIGN KEY (ownerId) REFERENCES users(id);
