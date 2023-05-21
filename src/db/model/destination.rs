@@ -17,10 +17,10 @@ pub struct Destination {
 #[derive(Insertable, Serialize, Deserialize)]
 #[diesel(table_name = destinations)]
 pub struct NewDestination {
-  #[column_name = "ownerId"]
+  #[diesel(column_name = "ownerId")]
   pub owner_id: u64,
   pub visibility: String,
-  #[column_name = "isReviewed"]
+  #[diesel(column_name = "isReviewed")]
   pub is_reviewed: bool,
   pub name: String,
   pub latitude: f64,
@@ -30,10 +30,10 @@ pub struct NewDestination {
 #[derive(AsChangeset, Serialize, Deserialize)]
 #[diesel(table_name = destinations)]
 pub struct UpdateDestination {
-  #[column_name = "ownerId"]
+  #[diesel(column_name = "ownerId")]
   pub owner_id: Option<u64>,
   pub visibility: Option<String>,
-  #[column_name = "isReviewed"]
+  #[diesel(column_name = "isReviewed")]
   pub is_reviewed: Option<bool>,
   pub name: Option<String>,
   pub latitude: Option<f64>,

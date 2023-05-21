@@ -141,3 +141,27 @@ pub async fn admin_update_destination_by_id(
     Err(_) => Err(AppError::internal_server_error()),
   }
 }
+
+pub async fn admin_delete_destination_by_id(
+  db_pool: web::Data<DbPool>,
+  destination_id: u64,
+) -> Result<(), AppError> {
+  let result: Result<Result<(), AppError>, _> = web::block(move || {
+    let mut db_connection;
+
+    if let Ok(connection) = db_pool.get() {
+      db_connection = connection;
+    } else {
+      return Err(AppError::internal_server_error());
+    }
+    diesel::delete(destinations.filter(id.eq(destination_id)))
+      .execute(&mut db_connection)
+      .map(|_| ())
+      .map_err(|_| AppError::internal_server_error())
+  })
+  .await;
+  match result {
+    Ok(inner_result) => inner_result,
+    Err(_) => Err(AppError::internal_server_error()),
+  }
+}

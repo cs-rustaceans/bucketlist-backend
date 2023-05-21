@@ -91,6 +91,19 @@ async fn update_destination_by_id(
   }
 }
 
+async fn delete_destination_by_id(
+  pool: web::Data<DbPool>,
+  destination_id: web::Path<u64>,
+) -> Result<HttpResponse, impl actix_web::ResponseError> {
+  let result: Result<(), AppError> =
+    destination_service::admin_delete_destination_by_id(pool, *destination_id).await;
+  if let Err(error) = result {
+    return Err(error);
+  } else {
+    return Ok(HttpResponse::Ok().into());
+  }
+}
+
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
   cfg
     .service(
@@ -102,6 +115,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     .service(
       web::resource("/{id}")
         .route(web::get().to(get_destination_by_id))
-        .route(web::patch().to(update_destination_by_id)),
+        .route(web::patch().to(update_destination_by_id))
+        .route(web::delete().to(delete_destination_by_id)),
     );
 }
