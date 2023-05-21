@@ -14,11 +14,11 @@ async fn get_all_destinations(
   if let Err(error) = result {
     return Err(error);
   } else {
-    let users: Vec<Destination> = result.unwrap();
+    let destinations: Vec<Destination> = result.unwrap();
     return Ok(
       HttpResponse::Ok()
         .content_type(ContentType::json())
-        .json(users),
+        .json(destinations),
     );
   }
 }
@@ -31,11 +31,29 @@ async fn get_all_unreviewed_destinations(
   if let Err(error) = result {
     return Err(error);
   } else {
-    let users: Vec<Destination> = result.unwrap();
+    let destinations: Vec<Destination> = result.unwrap();
     return Ok(
       HttpResponse::Ok()
         .content_type(ContentType::json())
-        .json(users),
+        .json(destinations),
+    );
+  }
+}
+
+async fn get_destination_by_id(
+  pool: web::Data<DbPool>,
+  destination_id: web::Path<u64>,
+) -> Result<HttpResponse, impl actix_web::ResponseError> {
+  let result: Result<Destination, AppError> =
+    destination_service::admin_get_destination_by_id(pool, *destination_id).await;
+  if let Err(error) = result {
+    return Err(error);
+  } else {
+    let destination: Destination = result.unwrap();
+    return Ok(
+      HttpResponse::Ok()
+        .content_type(ContentType::json())
+        .json(destination),
     );
   }
 }
@@ -43,5 +61,6 @@ async fn get_all_unreviewed_destinations(
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
   cfg
     .service(web::resource("").route(web::get().to(get_all_destinations)))
-    .service(web::resource("/unreviewed").route(web::get().to(get_all_unreviewed_destinations)));
+    .service(web::resource("/unreviewed").route(web::get().to(get_all_unreviewed_destinations)))
+    .service(web::resource("/{id}").route(web::get().to(get_destination_by_id)));
 }
