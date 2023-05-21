@@ -1,6 +1,18 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    destinations (id) {
+        id -> Unsigned<Bigint>,
+        ownerId -> Unsigned<Bigint>,
+        visibility -> Varchar,
+        isReviewed -> Bool,
+        name -> Varchar,
+        latitude -> Nullable<Float>,
+        longitude -> Nullable<Float>,
+    }
+}
+
+diesel::table! {
     users (id) {
         id -> Unsigned<Bigint>,
         role -> Varchar,
@@ -9,3 +21,7 @@ diesel::table! {
         status -> Varchar,
     }
 }
+
+diesel::joinable!(destinations -> users (ownerId));
+
+diesel::allow_tables_to_appear_in_same_query!(destinations, users,);
