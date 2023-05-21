@@ -1,12 +1,13 @@
 use crate::applib::errors::AppError;
 use crate::db::model::destination::Destination;
-use diesel::prelude::*;
 use crate::db::schema::destinations::dsl::*;
-use actix_web::web;
 use crate::db::DbPool;
+use actix_web::web;
+use diesel::prelude::*;
 
-
-pub async fn admin_get_all_destinations(db_pool: web::Data<DbPool>) -> Result<Vec<Destination>, AppError> {
+pub async fn admin_get_all_destinations(
+  db_pool: web::Data<DbPool>,
+) -> Result<Vec<Destination>, AppError> {
   let result: Result<Result<Vec<Destination>, AppError>, _> = web::block(move || {
     let mut db_connection;
 

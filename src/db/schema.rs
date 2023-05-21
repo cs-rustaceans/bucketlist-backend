@@ -24,7 +24,4 @@ diesel::table! {
 
 diesel::joinable!(destinations -> users (ownerId));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    destinations,
-    users,
-);
+diesel::allow_tables_to_appear_in_same_query!(destinations, users,);
