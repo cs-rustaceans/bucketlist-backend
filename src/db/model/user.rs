@@ -24,6 +24,6 @@ pub struct NewUser {
 pub struct UpdateUser {
   pub role: Option<String>,
   pub email: Option<String>,
-  pub status: Option<String>,
   pub password: Option<String>,
+  pub status: Option<String>,
 }
