@@ -8,7 +8,7 @@ use actix_web::web;
 use bcrypt::{hash, DEFAULT_COST};
 use diesel::prelude::*;
 
-pub async fn create_user(
+pub async fn admin_create_user(
   db_pool: web::Data<DbPool>,
   user_json: web::Json<NewUser>,
 ) -> Result<(), AppError> {
@@ -43,7 +43,7 @@ pub async fn create_user(
   }
 }
 
-pub async fn get_all_users(db_pool: web::Data<DbPool>) -> Result<Vec<GetUserDTO>, AppError> {
+pub async fn admin_get_all_users(db_pool: web::Data<DbPool>) -> Result<Vec<GetUserDTO>, AppError> {
   let result: Result<Result<Vec<User>, AppError>, _> = web::block(move || {
     let mut db_connection;
 
@@ -69,7 +69,7 @@ pub async fn get_all_users(db_pool: web::Data<DbPool>) -> Result<Vec<GetUserDTO>
   }
 }
 
-pub async fn get_user_by_id(
+pub async fn admin_get_user_by_id(
   db_pool: web::Data<DbPool>,
   user_id: u64,
 ) -> Result<GetUserDTO, AppError> {
@@ -99,7 +99,7 @@ pub async fn get_user_by_id(
   }
 }
 
-pub async fn update_user(
+pub async fn admin_update_user(
   db_pool: web::Data<DbPool>,
   user_id: u64,
   user_json: web::Json<UpdateUser>,
@@ -137,7 +137,7 @@ pub async fn update_user(
   }
 }
 
-pub async fn delete_user(db_pool: web::Data<DbPool>, user_id: u64) -> Result<(), AppError> {
+pub async fn admin_delete_user(db_pool: web::Data<DbPool>, user_id: u64) -> Result<(), AppError> {
   let result = web::block(move || {
     let mut db_connection;
 

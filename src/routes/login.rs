@@ -6,7 +6,7 @@ use actix_web::web;
 use actix_web::HttpResponse;
 use std::collections::HashMap;
 
-pub async fn login(
+async fn login(
   pool: web::Data<DbPool>,
   login_form_json: web::Json<LoginForm>,
 ) -> Result<HttpResponse, impl actix_web::ResponseError> {
@@ -21,4 +21,8 @@ pub async fn login(
       .content_type(ContentType::json())
       .json(response),
   );
+}
+
+pub fn configure_routes(cfg: &mut web::ServiceConfig) {
+  cfg.service(web::resource("").route(web::post().to(login)));
 }
