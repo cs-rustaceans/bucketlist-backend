@@ -1,8 +1,6 @@
 use crate::db::schema::users;
-use actix_web::{body::BoxBody, http::header::ContentType, HttpRequest, HttpResponse, Responder};
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
-use serde_json;
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct User {
@@ -13,7 +11,7 @@ pub struct User {
   pub password: String,
 }
 
-#[derive(Insertable, Serialize, Deserialize, AsChangeset)]
+#[derive(Insertable, Serialize, Deserialize)]
 #[diesel(table_name = users)]
 pub struct NewUser {
   pub role: String,
@@ -21,11 +19,11 @@ pub struct NewUser {
   pub password: String,
 }
 
-impl Responder for User {
-  type Body = BoxBody;
-  fn respond_to(self, _: &HttpRequest) -> HttpResponse<Self::Body> {
-    HttpResponse::Ok()
-      .content_type(ContentType::json())
-      .body(serde_json::to_string(&self).unwrap())
-  }
+#[derive(Serialize, Deserialize, AsChangeset)]
+#[diesel(table_name = users)]
+pub struct UpdateUser {
+  pub role: Option<String>,
+  pub email: Option<String>,
+  pub status: Option<String>,
+  pub password: Option<String>,
 }

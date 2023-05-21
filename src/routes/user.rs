@@ -1,5 +1,5 @@
 use crate::applib::errors::AppError;
-use crate::db::model::user::{NewUser, User};
+use crate::db::model::user::{NewUser, UpdateUser, User};
 use crate::db::DbPool;
 use crate::service::user_service;
 use actix_web::http::header::ContentType;
@@ -55,7 +55,7 @@ pub async fn delete_user(
 pub async fn update_user(
   pool: web::Data<DbPool>,
   user_id: web::Path<u64>,
-  user_json: web::Json<NewUser>,
+  user_json: web::Json<UpdateUser>,
 ) -> Result<HttpResponse, impl actix_web::ResponseError> {
   let result: Result<(), AppError> = user_service::update_user(pool, *user_id, user_json).await;
 
