@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 pub struct User {
   pub id: u64,
   pub role: String,
-  pub status: String,
   pub email: String,
   pub password: String,
+  pub status: String,
 }
 
 #[derive(Insertable, Serialize, Deserialize)]
