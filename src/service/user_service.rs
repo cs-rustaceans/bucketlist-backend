@@ -1,5 +1,5 @@
 use crate::applib::errors::AppError;
-use crate::db::model::user::{NewUser, User};
+use crate::db::model::user::{NewUser, UpdateUser, User};
 use crate::db::schema::users;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
@@ -93,9 +93,17 @@ pub async fn get_user_by_id(db_pool: web::Data<DbPool>, user_id: u64) -> Result<
 pub async fn update_user(
   db_pool: web::Data<DbPool>,
   user_id: u64,
-  user_json: web::Json<NewUser>,
+  user_json: web::Json<UpdateUser>,
 ) -> Result<(), AppError> {
-  let new_user: NewUser = user_json.into_inner();
+  let mut update_user: UpdateUser = user_json.into_inner();
+
+  if let Some(plain_text_password) = update_user.password {
+    if let Ok(hashed_password) = hash(plain_text_password, DEFAULT_COST) {
+      update_user.password = Some(hashed_password);
+    } else {
+      return Err(AppError::internal_server_error());
+    }
+  }
 
   let result = web::block(move || {
     let mut db_connection;
@@ -107,7 +115,7 @@ pub async fn update_user(
     }
 
     diesel::update(users.filter(id.eq(user_id)))
-      .set(new_user)
+      .set(update_user)
       .execute(&mut db_connection)
       .map(|_| ())
       .map_err(|_| AppError::internal_server_error())
