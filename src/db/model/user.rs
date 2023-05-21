@@ -6,11 +6,11 @@ use serde_json;
 
 #[derive(Identifiable, Queryable, Serialize, Deserialize)]
 pub struct User {
-    pub id: u64,
-    pub role: String,
-    pub status: String,
-    pub email: String,
-    pub password: String,
+  pub id: u64,
+  pub role: String,
+  pub status: String,
+  pub email: String,
+  pub password: String,
 }
 
 #[derive(Insertable, Serialize, Deserialize, AsChangeset)]
