@@ -8,6 +8,7 @@ use serde_json;
 pub struct User {
   pub id: u64,
   pub role: String,
+  pub status: String,
   pub email: String,
   pub password: String,
 }
