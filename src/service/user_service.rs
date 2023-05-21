@@ -104,7 +104,15 @@ pub async fn update_user(
   user_id: u64,
   user_json: web::Json<UpdateUser>,
 ) -> Result<(), AppError> {
-  let update_user: UpdateUser = user_json.into_inner();
+  let mut update_user: UpdateUser = user_json.into_inner();
+
+  if let Some(plain_text_password) = update_user.password {
+    if let Ok(hashed_password) = hash(plain_text_password, DEFAULT_COST) {
+      update_user.password = Some(hashed_password);
+    } else {
+      return Err(AppError::internal_server_error());
+    }
+  }
 
   let result = web::block(move || {
     let mut db_connection;
