@@ -1,6 +1,7 @@
 use crate::applib::errors::AppError;
-use crate::db::model::user::{NewUser, UpdateUser, User};
+use crate::db::model::user::{NewUser, UpdateUser};
 use crate::db::DbPool;
+use crate::dto::get_user_dto::GetUserDTO;
 use crate::service::user_service;
 use actix_web::http::header::ContentType;
 use actix_web::web;
@@ -9,11 +10,11 @@ use actix_web::HttpResponse;
 pub async fn get_all_users(
   pool: web::Data<DbPool>,
 ) -> Result<HttpResponse, impl actix_web::ResponseError> {
-  let result: Result<Vec<User>, AppError> = user_service::get_all_users(pool).await;
+  let result: Result<Vec<GetUserDTO>, AppError> = user_service::get_all_users(pool).await;
   if let Err(error) = result {
     return Err(error);
   } else {
-    let users: Vec<User> = result.unwrap();
+    let users: Vec<GetUserDTO> = result.unwrap();
     return Ok(
       HttpResponse::Ok()
         .content_type(ContentType::json())
@@ -26,11 +27,11 @@ pub async fn get_user(
   pool: web::Data<DbPool>,
   user_id: web::Path<u64>,
 ) -> Result<HttpResponse, impl actix_web::ResponseError> {
-  let result: Result<User, AppError> = user_service::get_user_by_id(pool, *user_id).await;
+  let result: Result<GetUserDTO, AppError> = user_service::get_user_by_id(pool, *user_id).await;
   if let Err(error) = result {
     return Err(error);
   } else {
-    let user: User = result.unwrap();
+    let user: GetUserDTO = result.unwrap();
     return Ok(
       HttpResponse::Ok()
         .content_type(ContentType::json())

@@ -6,9 +6,9 @@ use serde::{Deserialize, Serialize};
 pub struct User {
   pub id: u64,
   pub role: String,
-  pub status: String,
   pub email: String,
   pub password: String,
+  pub status: String,
 }
 
 #[derive(Insertable, Serialize, Deserialize)]
@@ -24,6 +24,6 @@ pub struct NewUser {
 pub struct UpdateUser {
   pub role: Option<String>,
   pub email: Option<String>,
-  pub status: Option<String>,
   pub password: Option<String>,
+  pub status: Option<String>,
 }

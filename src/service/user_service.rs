@@ -3,6 +3,7 @@ use crate::db::model::user::{NewUser, UpdateUser, User};
 use crate::db::schema::users;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
+use crate::dto::get_user_dto::GetUserDTO;
 use actix_web::web;
 use bcrypt::{hash, DEFAULT_COST};
 use diesel::prelude::*;
@@ -42,8 +43,8 @@ pub async fn create_user(
   }
 }
 
-pub async fn get_all_users(db_pool: web::Data<DbPool>) -> Result<Vec<User>, AppError> {
-  let result = web::block(move || {
+pub async fn get_all_users(db_pool: web::Data<DbPool>) -> Result<Vec<GetUserDTO>, AppError> {
+  let result: Result<Result<Vec<User>, AppError>, _> = web::block(move || {
     let mut db_connection;
 
     if let Ok(connection) = db_pool.get() {
@@ -58,13 +59,21 @@ pub async fn get_all_users(db_pool: web::Data<DbPool>) -> Result<Vec<User>, AppE
   .await;
 
   match result {
-    Ok(inner_result) => inner_result,
+    Ok(inner_result) => inner_result.map(|result_users| {
+      result_users
+        .into_iter()
+        .map(|user| GetUserDTO::from(user))
+        .collect()
+    }),
     Err(_) => Err(AppError::internal_server_error()),
   }
 }
 
-pub async fn get_user_by_id(db_pool: web::Data<DbPool>, user_id: u64) -> Result<User, AppError> {
-  let result = web::block(move || {
+pub async fn get_user_by_id(
+  db_pool: web::Data<DbPool>,
+  user_id: u64,
+) -> Result<GetUserDTO, AppError> {
+  let result: Result<Result<Vec<User>, AppError>, _> = web::block(move || {
     let mut db_connection;
 
     if let Ok(connection) = db_pool.get() {
@@ -75,7 +84,7 @@ pub async fn get_user_by_id(db_pool: web::Data<DbPool>, user_id: u64) -> Result<
     users
       .filter(id.eq(user_id))
       .limit(1)
-      .load(&mut db_connection)
+      .load::<User>(&mut db_connection)
       .map_err(|_| AppError::internal_server_error())
   })
   .await;
@@ -83,7 +92,7 @@ pub async fn get_user_by_id(db_pool: web::Data<DbPool>, user_id: u64) -> Result<
   match result {
     Ok(Ok(mut result_users)) => result_users.pop().map_or(
       Err(AppError::not_found(Some(String::from("user")))),
-      |user| Ok(user),
+      |user| Ok(GetUserDTO::from(user)),
     ),
     Ok(Err(inner_error)) => Err(inner_error),
     Err(_) => Err(AppError::internal_server_error()),
