@@ -1,0 +1,8 @@
+CREATE TABLE sessions (
+  id VARCHAR(255) PRIMARY KEY NOT NULL,
+  userId BIGINT UNSIGNED,
+  createdAt DATE,
+  expiresAt Date
+);
+
+ALTER TABLE sessions ADD FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE;
