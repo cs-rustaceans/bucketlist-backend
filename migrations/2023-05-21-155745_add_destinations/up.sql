@@ -1,6 +1,6 @@
 -- Your SQL goes here
 CREATE TABLE destinations (
-  id SERIAL PRIMARY KEY NOT NULL,
+  id SERIAL PRIMARY KEY,
   ownerId BIGINT UNSIGNED NOT NULL, 
   visibility VARCHAR(255) NOT NULL,
   isReviewed BOOLEAN NOT NULL,
