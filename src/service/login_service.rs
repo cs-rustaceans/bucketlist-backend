@@ -30,7 +30,7 @@ pub async fn login(
       .get()
       .map_err(|_| AppError::internal_server_error())?;
     let mut db_users: Vec<User> = users::dsl::users
-      .filter(users::dsl::email.like(format!("%{}%", login_form.email)))
+      .filter(users::dsl::email.eq(login_form.email))
       .limit(1)
       .load(&mut db_connection)
       .map_err(|_| AppError::internal_server_error())?;
