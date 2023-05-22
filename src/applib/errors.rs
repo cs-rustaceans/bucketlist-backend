@@ -52,6 +52,14 @@ impl AppError {
       message: "The email or password are invalid.".to_string(),
     }
   }
+
+  pub fn unauthorized() -> Self {
+    Self {
+      status: StatusCode::UNAUTHORIZED,
+      code: "Unauthorized".to_string(),
+      message: "Unauthorized to access resource.".to_string(),
+    }
+  }
 }
 
 impl Display for AppError {

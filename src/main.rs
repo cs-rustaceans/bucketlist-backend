@@ -1,6 +1,7 @@
 mod applib;
 mod db;
 mod dto;
+mod middleware;
 mod routes;
 mod service;
 use actix_cors::Cors;
