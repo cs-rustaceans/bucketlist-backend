@@ -62,22 +62,24 @@ pub async fn login(
     db_connection = db_pool
       .get()
       .map_err(|_| AppError::internal_server_error())?;
-    diesel::insert_into(sessions::table)
-      .values(&new_session)
-      .execute(&mut db_connection)
-      .map_err(|_| AppError::internal_server_error())?;
-    let id: u64 = diesel::select(last_insert_id())
-      .first::<i64>(&mut db_connection)
-      .map_err(|_| AppError::internal_server_error())? as u64;
+    db_connection.transaction::<_, AppError, _>(|db_connection| {
+      diesel::insert_into(sessions::table)
+        .values(&new_session)
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())?;
+      let id: u64 = diesel::select(last_insert_id())
+        .first::<i64>(db_connection)
+        .map_err(|_| AppError::internal_server_error())? as u64;
 
-    let session: Session = sessions::dsl::sessions
-      .filter(sessions::dsl::id.eq(id))
-      .limit(1)
-      .load(&mut db_connection)
-      .map_err(|_| AppError::internal_server_error())?
-      .pop()
-      .ok_or(AppError::internal_server_error())?;
-    return Ok(session);
+      let session: Session = sessions::dsl::sessions
+        .filter(sessions::dsl::id.eq(id))
+        .limit(1)
+        .load(db_connection)
+        .map_err(|_| AppError::internal_server_error())?
+        .pop()
+        .ok_or(AppError::internal_server_error())?;
+      return Ok(session);
+    })
   })
   .await??;
 

@@ -85,3 +85,9 @@ impl From<BlockingError> for AppError {
     AppError::internal_server_error()
   }
 }
+
+impl From<diesel::result::Error> for AppError {
+  fn from(_: diesel::result::Error) -> AppError {
+    AppError::internal_server_error()
+  }
+}
