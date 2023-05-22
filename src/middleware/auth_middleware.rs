@@ -21,7 +21,7 @@ pub async fn authentification_middleware(
   credentials: BearerAuth,
 ) -> Result<ServiceRequest, (Error, ServiceRequest)> {
   let jwt_secret_option: Option<String> = req
-    .app_data::<Config>()
+    .app_data::<web::Data<Config>>()
     .cloned()
     .map(|config| config.jwt_secret());
 
@@ -42,7 +42,7 @@ pub async fn authentification_middleware(
 
   let claims = claims_result.unwrap();
 
-  let db_pool_option: Option<DbPool> = req.app_data::<DbPool>().cloned();
+  let db_pool_option: Option<web::Data<DbPool>> = req.app_data::<web::Data<DbPool>>().cloned();
 
   if db_pool_option.is_none() {
     return Err((AppError::internal_server_error().into(), req));
