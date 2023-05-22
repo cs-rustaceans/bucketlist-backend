@@ -14,10 +14,10 @@ diesel::table! {
 
 diesel::table! {
     sessions (id) {
-        id -> Varchar,
-        userId -> Nullable<Unsigned<Bigint>>,
-        createdAt -> Nullable<Date>,
-        expiresAt -> Nullable<Date>,
+        id -> Unsigned<Bigint>,
+        userId -> Unsigned<Bigint>,
+        createdAt -> Timestamp,
+        expiresAt -> Timestamp,
     }
 }
 

@@ -1,5 +1,5 @@
 use actix_web::{
-  error,
+  error::{self, BlockingError},
   http::{header::ContentType, StatusCode},
   HttpResponse,
 };
@@ -69,5 +69,11 @@ impl error::ResponseError for AppError {
     HttpResponse::build(self.status_code())
       .content_type(ContentType::json())
       .body(serde_json::to_string(self).expect(""))
+  }
+}
+
+impl From<BlockingError> for AppError {
+  fn from(_: BlockingError) -> AppError {
+    AppError::internal_server_error()
   }
 }

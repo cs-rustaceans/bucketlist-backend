@@ -2,7 +2,7 @@ use crate::db::schema::users;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize)]
+#[derive(Identifiable, Queryable)]
 pub struct User {
   pub id: u64,
   pub role: String,
