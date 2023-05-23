@@ -1,7 +1,7 @@
 mod applib;
-mod guard;
 mod db;
 mod dto;
+mod guard;
 mod middleware;
 mod routes;
 mod service;
