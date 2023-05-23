@@ -2,8 +2,8 @@ CREATE TABLE bucketlist_items (
   id SERIAL PRIMARY KEY,
   destinationId BIGINT UNSIGNED NOT NULL,
   ownerId BIGINT UNSIGNED NOT NULL,
-  startDate DATE NOT NULL,
-  endDate DATE NOT NULL
+  startDate TIMESTAMP NOT NULL,
+  endDate TIMESTAMP NOT NULL
 );
 
 ALTER TABLE bucketlist_items ADD FOREIGN KEY (ownerId) REFERENCES users(id) ON DELETE CASCADE;

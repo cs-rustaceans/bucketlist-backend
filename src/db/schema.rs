@@ -5,8 +5,8 @@ diesel::table! {
         id -> Unsigned<Bigint>,
         destinationId -> Unsigned<Bigint>,
         ownerId -> Unsigned<Bigint>,
-        startDate -> Date,
-        endDate -> Date,
+        startDate -> Timestamp,
+        endDate -> Timestamp,
     }
 }
 
