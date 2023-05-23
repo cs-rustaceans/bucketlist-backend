@@ -47,9 +47,4 @@ diesel::joinable!(bucketlist_items -> users (ownerId));
 diesel::joinable!(destinations -> users (ownerId));
 diesel::joinable!(sessions -> users (userId));
 
-diesel::allow_tables_to_appear_in_same_query!(
-    bucketlist_items,
-    destinations,
-    sessions,
-    users,
-);
+diesel::allow_tables_to_appear_in_same_query!(bucketlist_items, destinations, sessions, users,);

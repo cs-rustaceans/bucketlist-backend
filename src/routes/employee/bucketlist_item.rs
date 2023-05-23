@@ -14,6 +14,21 @@ async fn get_own_bucketlist(pool: web::Data<DbPool>, user: User) -> Result<HttpR
   )
 }
 
+async fn get_bucketlist_item_by_id(
+  pool: web::Data<DbPool>,
+  user: User,
+  id: web::Path<u64>,
+) -> Result<HttpResponse, AppError> {
+  Ok(
+    HttpResponse::Ok()
+      .content_type(ContentType::json())
+      .json(bucketlist_service::employee_get_bucketlist_item_by_id(pool, user, *id).await?),
+  )
+}
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
-  cfg.service(web::resource("").route(web::get().to(get_own_bucketlist)));
+  cfg
+    .service(web::resource("").route(web::get().to(get_own_bucketlist)))
+    .service(
+      web::scope("/{id}").service(web::resource("").route(web::get().to(get_bucketlist_item_by_id))),
+    );
 }
