@@ -14,6 +14,8 @@ pub struct BucketlistItem {
   pub start_date: NaiveDateTime,
   #[diesel(column_name = "endDate")]
   pub end_date: NaiveDateTime,
+  #[diesel(column_name = "isFavorite")]
+  pub is_favorite: bool,
 }
 
 #[derive(Insertable, Serialize, Deserialize)]
@@ -27,4 +29,6 @@ pub struct NewBucketlistItem {
   pub start_date: NaiveDateTime,
   #[diesel(column_name = "endDate")]
   pub end_date: NaiveDateTime,
+  #[diesel(column_name = "isFavorite")]
+  pub is_favorite: bool,
 }
