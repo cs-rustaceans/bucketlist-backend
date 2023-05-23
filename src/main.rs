@@ -1,4 +1,5 @@
 mod applib;
+mod guard;
 mod db;
 mod dto;
 mod middleware;
