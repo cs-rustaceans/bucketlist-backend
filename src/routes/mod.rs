@@ -1,4 +1,5 @@
 pub mod admin;
+pub mod employee;
 pub mod login;
 use crate::middleware::auth_middleware::authentification_middleware;
 use actix_web::web;
@@ -10,6 +11,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
     .service(
       web::scope("")
         .wrap(HttpAuthentication::bearer(authentification_middleware))
-        .service(web::scope("/admin").configure(admin::configure_routes)),
+        .service(web::scope("/admin").configure(admin::configure_routes))
+        .service(web::scope("/employee").configure(employee::configure_routes)),
     );
 }
