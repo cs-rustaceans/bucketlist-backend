@@ -1,4 +1,5 @@
 pub mod admin;
+pub mod common;
 pub mod employee;
 pub mod login;
 use crate::middleware::auth_middleware::authentification_middleware;

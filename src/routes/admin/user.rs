@@ -3,6 +3,8 @@ use crate::db::model::user::{NewUser, UpdateUser};
 use crate::db::DbPool;
 use crate::dto::get_user_dto::GetUserDTO;
 use crate::service::admin::user_service;
+
+use crate::routes::common;
 use actix_web::http::header::ContentType;
 use actix_web::web;
 use actix_web::HttpResponse;
@@ -89,6 +91,7 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         .route(web::get().to(get_all_users))
         .route(web::post().to(create_user)),
     )
+    .service(web::resource("/me").route(web::get().to(common::user::get_user)))
     .service(
       web::resource("/{id}")
         .route(web::get().to(get_user))
