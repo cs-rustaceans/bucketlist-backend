@@ -1,5 +1,5 @@
 use actix_web::{
-  error,
+  error::{self, BlockingError},
   http::{header::ContentType, StatusCode},
   HttpResponse,
 };
@@ -52,6 +52,14 @@ impl AppError {
       message: "The email or password are invalid.".to_string(),
     }
   }
+
+  pub fn unauthorized() -> Self {
+    Self {
+      status: StatusCode::UNAUTHORIZED,
+      code: "Unauthorized".to_string(),
+      message: "Unauthorized to access resource.".to_string(),
+    }
+  }
 }
 
 impl Display for AppError {
@@ -69,5 +77,17 @@ impl error::ResponseError for AppError {
     HttpResponse::build(self.status_code())
       .content_type(ContentType::json())
       .body(serde_json::to_string(self).expect(""))
+  }
+}
+
+impl From<BlockingError> for AppError {
+  fn from(_: BlockingError) -> AppError {
+    AppError::internal_server_error()
+  }
+}
+
+impl From<diesel::result::Error> for AppError {
+  fn from(_: diesel::result::Error) -> AppError {
+    AppError::internal_server_error()
   }
 }

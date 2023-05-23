@@ -1,3 +1,4 @@
+use crate::applib::config::Config;
 use crate::db::DbPool;
 use crate::dto::login_form::LoginForm;
 use crate::service::login_service;
@@ -8,9 +9,10 @@ use std::collections::HashMap;
 
 async fn login(
   pool: web::Data<DbPool>,
+  config: web::Data<Config>,
   login_form_json: web::Json<LoginForm>,
 ) -> Result<HttpResponse, impl actix_web::ResponseError> {
-  let result = login_service::login(pool, login_form_json).await;
+  let result = login_service::login(pool, config, login_form_json).await;
   if let Err(error) = result {
     return Err(error);
   }

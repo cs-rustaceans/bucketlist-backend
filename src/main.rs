@@ -1,6 +1,8 @@
 mod applib;
 mod db;
 mod dto;
+mod guard;
+mod middleware;
 mod routes;
 mod service;
 use actix_cors::Cors;
@@ -23,14 +25,17 @@ async fn main() -> Result<(), std::io::Error> {
     ))
     .expect("Unexpected error getting a pool");
 
+  let config_clone = config.clone();
+
   HttpServer::new(move || {
     let cors = Cors::permissive();
     App::new()
       .wrap(cors)
       .app_data(web::Data::new(pool.clone()))
+      .app_data(web::Data::new(config.clone()))
       .configure(routes::configure_routes)
   })
-  .bind(("127.0.0.1", config.port()))?
+  .bind(("127.0.0.1", config_clone.port()))?
   .run()
   .await
 }
