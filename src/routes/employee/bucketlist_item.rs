@@ -77,6 +77,15 @@ async fn delete_bucketlist_item(
   Ok(HttpResponse::Ok().into())
 }
 
+async fn make_bucketlist_item_public(
+  pool: web::Data<DbPool>,
+  user: User,
+  id: web::Path<u64>,
+) -> Result<HttpResponse, AppError> {
+  bucketlist_service::employee_make_bucketlist_item_destination_public(pool, user, *id).await?;
+  Ok(HttpResponse::Ok().into())
+}
+
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
   cfg
     .service(web::resource("").route(web::get().to(get_own_bucketlist)))
@@ -92,11 +101,13 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         ),
     )
     .service(
-      web::scope("/{id}").service(
-        web::resource("")
-          .route(web::get().to(get_bucketlist_item_by_id))
-          .route(web::patch().to(update_bucketlist_item))
-          .route(web::delete().to(delete_bucketlist_item)),
-      ),
+      web::scope("/{id}")
+        .service(
+          web::resource("")
+            .route(web::get().to(get_bucketlist_item_by_id))
+            .route(web::patch().to(update_bucketlist_item))
+            .route(web::delete().to(delete_bucketlist_item)),
+        )
+        .service(web::resource("/make-public").route(web::patch().to(make_bucketlist_item_public))),
     );
 }

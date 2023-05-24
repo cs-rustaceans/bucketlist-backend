@@ -228,3 +228,50 @@ pub async fn employee_delete_bucketlist_item(
     Ok(())
   }
 }
+
+pub async fn employee_make_bucketlist_item_destination_public(
+  db_pool: web::Data<DbPool>,
+  user: User,
+  id: u64,
+) -> Result<(), AppError> {
+  let row_count: usize = web::block(move || {
+    let mut db_connection = db_pool
+      .get()
+      .map_err(|_| AppError::internal_server_error())?;
+
+    db_connection.transaction::<_, AppError, _>(|db_connection| {
+      let bucketlist_item_option: Option<BucketlistItem> = bucketlist_items::dsl::bucketlist_items
+        .filter(
+          bucketlist_items::dsl::ownerId
+            .eq(user.id)
+            .and(bucketlist_items::dsl::id.eq(id)),
+        )
+        .load(db_connection)
+        .map_err(|_| AppError::internal_server_error())?
+        .into_iter()
+        .next();
+
+      if let Some(bucketlist_item) = bucketlist_item_option {
+        diesel::update(destinations::dsl::destinations)
+          .filter(
+            destinations::dsl::ownerId
+              .eq(user.id)
+              .and(destinations::dsl::id.eq(bucketlist_item.destination_id))
+              .and(destinations::dsl::isReviewed.eq(true)),
+          )
+          .set(destinations::dsl::visibility.eq("public"))
+          .execute(db_connection)
+          .map_err(|_| AppError::internal_server_error())
+      } else {
+        Err(AppError::not_found(Some(String::from("bucketlist item"))))
+      }
+    })
+  })
+  .await??;
+
+  if row_count == 0 {
+    Err(AppError::not_found(Some(String::from("bucketlist item"))))
+  } else {
+    Ok(())
+  }
+}
