@@ -30,8 +30,13 @@ pub async fn employee_get_own_bucketlist(
     })
     .await??
     .into_iter()
-    .map(|(bucketlist_item, destination)| BucketlistItemWithDestinationDTO{bucketlist_item, destination})
-    .collect()
+    .map(
+      |(bucketlist_item, destination)| BucketlistItemWithDestinationDTO {
+        bucketlist_item,
+        destination,
+      },
+    )
+    .collect(),
   )
 }
 
@@ -60,7 +65,12 @@ pub async fn employee_get_bucketlist_item_by_id(
     .await??
     .pop()
     .ok_or(AppError::not_found(Some(String::from("bucketlist item"))))
-    .map(|(bucketlist_item, destination)| BucketlistItemWithDestinationDTO{bucketlist_item, destination})?
+    .map(
+      |(bucketlist_item, destination)| BucketlistItemWithDestinationDTO {
+        bucketlist_item,
+        destination,
+      },
+    )?,
   )
 }
 
