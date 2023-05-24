@@ -2,6 +2,7 @@ use crate::applib::errors::AppError;
 use crate::db::last_insert_id;
 use crate::db::model::bucketlist_item::BucketlistItem;
 use crate::db::model::bucketlist_item::NewBucketlistItem;
+use crate::db::model::bucketlist_item::UpdateBucketlistItem;
 use crate::db::model::destination::Destination;
 use crate::db::model::destination::NewDestination;
 use crate::db::model::user::User;
@@ -164,4 +165,34 @@ pub async fn employee_add_bucketlist_item_with_private_list(
     })
   })
   .await?
+}
+
+pub async fn employee_update_bucketlist_item(
+  db_pool: web::Data<DbPool>,
+  user: User,
+  id: u64,
+  update_bucketlist_item_json: web::Json<UpdateBucketlistItem>,
+) -> Result<(), AppError> {
+  if update_bucketlist_item_json.start_date > update_bucketlist_item_json.end_date {
+    return Err(AppError::bad_request());
+  }
+
+  web::block(move || {
+    let mut db_connection = db_pool
+      .get()
+      .map_err(|_| AppError::internal_server_error())?;
+
+    diesel::update(bucketlist_items::dsl::bucketlist_items)
+      .filter(
+        bucketlist_items::dsl::ownerId
+          .eq(user.id)
+          .and(bucketlist_items::dsl::id.eq(id)),
+      )
+      .set(update_bucketlist_item_json.into_inner())
+      .execute(&mut db_connection)
+      .map_err(|_| AppError::internal_server_error())
+  })
+  .await??;
+
+  Ok(())
 }

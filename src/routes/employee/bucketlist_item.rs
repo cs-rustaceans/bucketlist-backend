@@ -1,5 +1,6 @@
 use crate::applib::errors::AppError;
 use crate::db::model::bucketlist_item::NewBucketlistItem;
+use crate::db::model::bucketlist_item::UpdateBucketlistItem;
 use crate::db::model::user::User;
 use crate::db::DbPool;
 use crate::dto::bucketlist_item_with_private_list_dto::BucketlistItemWithPrivateListDTO;
@@ -56,6 +57,17 @@ async fn add_bucketlist_item_with_private_list(
   Ok(HttpResponse::Created().into())
 }
 
+async fn update_bucketlist_item(
+  pool: web::Data<DbPool>,
+  user: User,
+  id: web::Path<u64>,
+  update_bucketlist_item_json: web::Json<UpdateBucketlistItem>,
+) -> Result<HttpResponse, AppError> {
+  bucketlist_service::employee_update_bucketlist_item(pool, user, *id, update_bucketlist_item_json)
+    .await?;
+  Ok(HttpResponse::Ok().into())
+}
+
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
   cfg
     .service(web::resource("").route(web::get().to(get_own_bucketlist)))
@@ -71,7 +83,10 @@ pub fn configure_routes(cfg: &mut web::ServiceConfig) {
         ),
     )
     .service(
-      web::scope("/{id}")
-        .service(web::resource("").route(web::get().to(get_bucketlist_item_by_id))),
+      web::scope("/{id}").service(
+        web::resource("")
+          .route(web::get().to(get_bucketlist_item_by_id))
+          .route(web::patch().to(update_bucketlist_item)),
+      ),
     );
 }

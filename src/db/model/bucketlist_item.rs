@@ -30,3 +30,12 @@ pub struct NewBucketlistItem {
   #[diesel(column_name = "endDate")]
   pub end_date: NaiveDateTime,
 }
+
+#[derive(AsChangeset, Serialize, Deserialize)]
+#[diesel(table_name=bucketlist_items)]
+pub struct UpdateBucketlistItem {
+  #[diesel(column_name = "startDate")]
+  pub start_date: NaiveDateTime,
+  #[diesel(column_name = "endDate")]
+  pub end_date: NaiveDateTime,
+}
