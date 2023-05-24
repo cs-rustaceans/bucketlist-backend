@@ -68,6 +68,17 @@ impl AppError {
       message: "Unauthorized to access resource.".to_string(),
     }
   }
+
+  // bucketlist items
+
+  pub fn destination_is_not_reviewed() -> Self {
+    Self {
+      status: StatusCode::BAD_REQUEST,
+      code: "Bad request".to_string(),
+      message: "The destination of this bucketlist has not yet been verified by an admin"
+        .to_string(),
+    }
+  }
 }
 
 impl Display for AppError {
