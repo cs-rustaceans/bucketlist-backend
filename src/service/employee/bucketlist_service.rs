@@ -177,7 +177,7 @@ pub async fn employee_update_bucketlist_item(
     return Err(AppError::bad_request());
   }
 
-  web::block(move || {
+  let row_count: usize = web::block(move || {
     let mut db_connection = db_pool
       .get()
       .map_err(|_| AppError::internal_server_error())?;
@@ -194,5 +194,37 @@ pub async fn employee_update_bucketlist_item(
   })
   .await??;
 
-  Ok(())
+  if row_count == 0 {
+    Err(AppError::not_found(Some(String::from("bucketlist item"))))
+  } else {
+    Ok(())
+  }
+}
+
+pub async fn employee_delete_bucketlist_item(
+  db_pool: web::Data<DbPool>,
+  user: User,
+  id: u64,
+) -> Result<(), AppError> {
+  let row_count: usize = web::block(move || {
+    let mut db_connection = db_pool
+      .get()
+      .map_err(|_| AppError::internal_server_error())?;
+
+    diesel::delete(bucketlist_items::dsl::bucketlist_items)
+      .filter(
+        bucketlist_items::dsl::ownerId
+          .eq(user.id)
+          .and(bucketlist_items::dsl::id.eq(id)),
+      )
+      .execute(&mut db_connection)
+      .map_err(|_| AppError::internal_server_error())
+  })
+  .await??;
+
+  if row_count == 0 {
+    Err(AppError::not_found(Some(String::from("bucketlist item"))))
+  } else {
+    Ok(())
+  }
 }
