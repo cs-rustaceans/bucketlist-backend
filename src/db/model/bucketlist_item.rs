@@ -3,7 +3,7 @@ use chrono::prelude::*;
 use diesel::prelude::*;
 use serde::{Deserialize, Serialize};
 
-#[derive(Identifiable, Queryable, Serialize, Deserialize)]
+#[derive(Identifiable, Queryable, Serialize, Deserialize, Selectable)]
 pub struct BucketlistItem {
   pub id: u64,
   #[diesel(column_name = "destinationId")]
