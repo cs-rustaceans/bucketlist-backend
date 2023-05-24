@@ -44,6 +44,14 @@ impl AppError {
     }
   }
 
+  pub fn bad_request() -> Self {
+    Self {
+      status: StatusCode::BAD_REQUEST,
+      code: "Bad request".to_string(),
+      message: "Bad request.".to_string(),
+    }
+  }
+
   // LOGIN
   pub fn invalid_email_password() -> Self {
     Self {

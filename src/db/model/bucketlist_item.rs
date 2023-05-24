@@ -24,11 +24,9 @@ pub struct NewBucketlistItem {
   #[diesel(column_name = "destinationId")]
   pub destination_id: u64,
   #[diesel(column_name = "ownerId")]
-  pub owner_id: u64,
+  pub owner_id: Option<u64>,
   #[diesel(column_name = "startDate")]
   pub start_date: NaiveDateTime,
   #[diesel(column_name = "endDate")]
   pub end_date: NaiveDateTime,
-  #[diesel(column_name = "isFavorite")]
-  pub is_favorite: bool,
 }
