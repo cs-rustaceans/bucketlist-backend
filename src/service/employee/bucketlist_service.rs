@@ -1,13 +1,16 @@
 use crate::applib::errors::AppError;
+use crate::db::last_insert_id;
 use crate::db::model::bucketlist_item::BucketlistItem;
 use crate::db::model::bucketlist_item::NewBucketlistItem;
 use crate::db::model::destination::Destination;
+use crate::db::model::destination::NewDestination;
 use crate::db::model::user::User;
 use crate::db::predicates::destination::available_for_user;
 use crate::db::schema::bucketlist_items;
 use crate::db::schema::destinations;
 use crate::db::DbPool;
 use crate::dto::bucketlist_item_with_destination_dto::BucketlistItemWithDestinationDTO;
+use crate::dto::bucketlist_item_with_private_list_dto::BucketlistItemWithPrivateListDTO;
 use actix_web::web;
 use diesel::prelude::*;
 
@@ -102,6 +105,56 @@ pub async fn employee_add_bucketlist_item_from_available_destination(
       if result.len() != 1 {
         return Err(AppError::not_found(Some(String::from("destination"))));
       }
+
+      diesel::insert_into(bucketlist_items::table)
+        .values(new_bucketlist_item)
+        .execute(db_connection)?;
+
+      Ok(())
+    })
+  })
+  .await?
+}
+
+pub async fn employee_add_bucketlist_item_with_private_list(
+  db_pool: web::Data<DbPool>,
+  user: User,
+  bucketlist_item_with_private_list_json: web::Json<BucketlistItemWithPrivateListDTO>,
+) -> Result<(), AppError> {
+  if bucketlist_item_with_private_list_json.start_date
+    > bucketlist_item_with_private_list_json.end_date
+  {
+    return Err(AppError::bad_request());
+  }
+
+  web::block(move || {
+    let mut db_connection = db_pool
+      .get()
+      .map_err(|_| AppError::internal_server_error())?;
+    db_connection.transaction::<_, AppError, _>(|db_connection| {
+      let new_destination = NewDestination {
+        owner_id: user.id,
+        name: bucketlist_item_with_private_list_json.name.clone(),
+        is_reviewed: false,
+        visibility: String::from("private"),
+        latitude: bucketlist_item_with_private_list_json.latitude,
+        longitude: bucketlist_item_with_private_list_json.longitude,
+      };
+
+      diesel::insert_into(destinations::table)
+        .values(new_destination)
+        .execute(db_connection)?;
+
+      let id: u64 = diesel::select(last_insert_id())
+        .first::<i64>(db_connection)
+        .map_err(|_| AppError::internal_server_error())? as u64;
+
+      let new_bucketlist_item = NewBucketlistItem {
+        destination_id: id,
+        owner_id: Some(user.id),
+        start_date: bucketlist_item_with_private_list_json.start_date,
+        end_date: bucketlist_item_with_private_list_json.end_date,
+      };
 
       diesel::insert_into(bucketlist_items::table)
         .values(new_bucketlist_item)

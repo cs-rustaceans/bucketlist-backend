@@ -2,6 +2,7 @@ use crate::applib::errors::AppError;
 use crate::db::model::bucketlist_item::NewBucketlistItem;
 use crate::db::model::user::User;
 use crate::db::DbPool;
+use crate::dto::bucketlist_item_with_private_list_dto::BucketlistItemWithPrivateListDTO;
 use crate::service::employee::bucketlist_service;
 use actix_web::http::header::ContentType;
 use actix_web::web;
@@ -38,17 +39,36 @@ async fn add_bucketlist_item_from_available_destination(
     new_bucketlist_item_json,
   )
   .await?;
-  Ok(HttpResponse::Ok().into())
+  Ok(HttpResponse::Created().into())
+}
+
+async fn add_bucketlist_item_with_private_list(
+  pool: web::Data<DbPool>,
+  user: User,
+  new_bucketlist_item_json: web::Json<BucketlistItemWithPrivateListDTO>,
+) -> Result<HttpResponse, AppError> {
+  bucketlist_service::employee_add_bucketlist_item_with_private_list(
+    pool,
+    user,
+    new_bucketlist_item_json,
+  )
+  .await?;
+  Ok(HttpResponse::Created().into())
 }
 
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
   cfg
     .service(web::resource("").route(web::get().to(get_own_bucketlist)))
     .service(
-      web::scope("/add").service(
-        web::resource("/from-available")
-          .route(web::post().to(add_bucketlist_item_from_available_destination)),
-      ),
+      web::scope("/add")
+        .service(
+          web::resource("/from-available")
+            .route(web::post().to(add_bucketlist_item_from_available_destination)),
+        )
+        .service(
+          web::resource("/with-private-list")
+            .route(web::post().to(add_bucketlist_item_with_private_list)),
+        ),
     )
     .service(
       web::scope("/{id}")
