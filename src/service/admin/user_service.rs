@@ -87,7 +87,7 @@ pub async fn admin_update_user(
       Some(hash(plain_text_password, DEFAULT_COST).map_err(|_| AppError::internal_server_error())?);
   }
 
-  web::block(move || {
+  let row_count: usize = web::block(move || {
     let mut db_connection = db_pool
       .get()
       .map_err(|_| AppError::internal_server_error())?;
@@ -95,26 +95,32 @@ pub async fn admin_update_user(
     diesel::update(users.filter(id.eq(user_id)))
       .set(update_user)
       .execute(&mut db_connection)
-      .map(|_| ())
       .map_err(|_| AppError::internal_server_error())
   })
   .await??;
 
-  Ok(())
+  if row_count == 0 {
+    Err(AppError::not_found(Some(String::from("user"))))
+  } else {
+    Ok(())
+  }
 }
 
 pub async fn admin_delete_user(db_pool: web::Data<DbPool>, user_id: u64) -> Result<(), AppError> {
-  web::block(move || {
+  let row_count: usize = web::block(move || {
     let mut db_connection = db_pool
       .get()
       .map_err(|_| AppError::internal_server_error())?;
 
     diesel::delete(users.filter(id.eq(user_id)))
       .execute(&mut db_connection)
-      .map(|_| ())
       .map_err(|_| AppError::internal_server_error())
   })
   .await??;
 
-  Ok(())
+  if row_count == 0 {
+    Err(AppError::not_found(Some(String::from("user"))))
+  } else {
+    Ok(())
+  }
 }
