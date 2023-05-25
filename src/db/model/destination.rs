@@ -1,13 +1,15 @@
 use crate::db::schema::destinations;
-use diesel::{AsChangeset, Insertable, Queryable};
+use diesel::{AsChangeset, Insertable, Queryable, Selectable};
 use serde::{Deserialize, Serialize};
 
-#[derive(Queryable, Serialize, Deserialize)]
+#[derive(Queryable, Serialize, Deserialize, Selectable)]
 #[diesel(table_name = destinations)]
 pub struct Destination {
   pub id: u64,
+  #[diesel(column_name = "ownerId")]
   pub owner_id: u64,
-  pub visiblity: String,
+  pub visibility: String,
+  #[diesel(column_name = "isReviewed")]
   pub is_reviewed: bool,
   pub name: String,
   pub latitude: f64,
