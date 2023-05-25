@@ -1,6 +1,17 @@
 // @generated automatically by Diesel CLI.
 
 diesel::table! {
+    bucketlist_items (id) {
+        id -> Unsigned<Bigint>,
+        destinationId -> Unsigned<Bigint>,
+        ownerId -> Unsigned<Bigint>,
+        startDate -> Timestamp,
+        endDate -> Timestamp,
+        isFavorite -> Bool,
+    }
+}
+
+diesel::table! {
     destinations (id) {
         id -> Unsigned<Bigint>,
         ownerId -> Unsigned<Bigint>,
@@ -31,7 +42,9 @@ diesel::table! {
     }
 }
 
+diesel::joinable!(bucketlist_items -> destinations (destinationId));
+diesel::joinable!(bucketlist_items -> users (ownerId));
 diesel::joinable!(destinations -> users (ownerId));
 diesel::joinable!(sessions -> users (userId));
 
-diesel::allow_tables_to_appear_in_same_query!(destinations, sessions, users,);
+diesel::allow_tables_to_appear_in_same_query!(bucketlist_items, destinations, sessions, users,);

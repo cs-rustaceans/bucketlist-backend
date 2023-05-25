@@ -1,6 +1,7 @@
 use crate::applib::errors::AppError;
 use crate::db::model::destination::Destination;
 use crate::db::model::user::User;
+use crate::db::predicates::destination::available_for_user;
 use crate::db::schema::destinations::dsl::*;
 use crate::db::DbPool;
 use actix_web::web;
@@ -17,11 +18,7 @@ pub async fn employee_get_all_available_destinations(
         .map_err(|_| AppError::internal_server_error())?;
 
       destinations
-        .filter(
-          isReviewed
-            .eq(true)
-            .and(ownerId.eq(user.id).or(visibility.eq("public"))),
-        )
+        .filter(available_for_user(user.id))
         .load(&mut db_connection)
         .map_err(|_| AppError::internal_server_error())
     })
