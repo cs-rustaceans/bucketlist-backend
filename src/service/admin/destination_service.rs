@@ -1,5 +1,7 @@
 use crate::applib::errors::AppError;
-use crate::db::model::destination::{Destination, NewDestination, UpdateDestination};
+use crate::db::model::destination::{
+  Destination, NewDestination, UpdateDestination, VisibilityEnum,
+};
 use crate::db::schema::destinations;
 use crate::db::schema::destinations::dsl::*;
 use crate::db::DbPool;
@@ -68,6 +70,8 @@ pub async fn admin_create_destination(
 ) -> Result<(), AppError> {
   let new_destination: NewDestination = destination_json.into_inner();
 
+  VisibilityEnum::try_from(new_destination.visibility.as_str())?;
+
   web::block(move || {
     let mut db_connection = db_pool
       .get()
@@ -90,6 +94,10 @@ pub async fn admin_update_destination_by_id(
   update_destination_json: web::Json<UpdateDestination>,
 ) -> Result<(), AppError> {
   let update_destination: UpdateDestination = update_destination_json.into_inner();
+
+  if let Some(destination_visibility) = &update_destination.visibility {
+    VisibilityEnum::try_from(destination_visibility.as_str())?;
+  }
 
   let row_count: usize = web::block(move || {
     let mut db_connection = db_pool

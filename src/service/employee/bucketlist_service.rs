@@ -5,6 +5,7 @@ use crate::db::model::bucketlist_item::NewBucketlistItem;
 use crate::db::model::bucketlist_item::UpdateBucketlistItem;
 use crate::db::model::destination::Destination;
 use crate::db::model::destination::NewDestination;
+use crate::db::model::destination::VisibilityEnum;
 use crate::db::model::user::User;
 use crate::db::predicates::destination::available_for_user;
 use crate::db::schema::bucketlist_items;
@@ -137,7 +138,7 @@ pub async fn employee_add_bucketlist_item_with_private_list(
         owner_id: user.id,
         name: bucketlist_item_with_private_list_json.name.clone(),
         is_reviewed: false,
-        visibility: String::from("private"),
+        visibility: String::from(Into::<&str>::into(VisibilityEnum::Private)),
         latitude: bucketlist_item_with_private_list_json.latitude,
         longitude: bucketlist_item_with_private_list_json.longitude,
       };
@@ -259,7 +260,7 @@ pub async fn employee_make_bucketlist_item_destination_public(
               .and(destinations::dsl::id.eq(bucketlist_item.destination_id))
               .and(destinations::dsl::isReviewed.eq(true)),
           )
-          .set(destinations::dsl::visibility.eq("public"))
+          .set(destinations::dsl::visibility.eq(Into::<&str>::into(VisibilityEnum::Public)))
           .execute(db_connection)
           .map_err(|_| AppError::internal_server_error())
       } else {

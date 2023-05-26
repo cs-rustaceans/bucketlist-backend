@@ -1,3 +1,4 @@
+use crate::applib::errors::AppError;
 use crate::db::schema::destinations;
 use diesel::{AsChangeset, Insertable, Queryable, Selectable};
 use serde::{Deserialize, Serialize};
@@ -40,4 +41,29 @@ pub struct UpdateDestination {
   pub name: Option<String>,
   pub latitude: Option<f64>,
   pub longitude: Option<f64>,
+}
+
+pub enum VisibilityEnum {
+  Public,
+  Private,
+}
+
+impl Into<&str> for VisibilityEnum {
+  fn into(self: Self) -> &'static str {
+    match self {
+      Self::Public => "public",
+      Self::Private => "private",
+    }
+  }
+}
+
+impl TryFrom<&str> for VisibilityEnum {
+  type Error = AppError;
+  fn try_from(s: &str) -> Result<VisibilityEnum, Self::Error> {
+    match s {
+      "public" => Ok(Self::Public),
+      "private" => Ok(Self::Private),
+      _ => Err(AppError::bad_request()),
+    }
+  }
 }

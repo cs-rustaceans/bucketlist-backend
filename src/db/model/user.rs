@@ -31,6 +31,17 @@ pub struct UpdateUser {
   pub status: Option<String>,
 }
 
+pub enum RoleEnum {
+  Admin,
+  Employee,
+}
+
+pub enum StatusEnum {
+  Active,
+  Inactive,
+  Deleted,
+}
+
 impl FromRequest for User {
   type Error = AppError;
   type Future = futures_util::future::Ready<Result<Self, Self::Error>>;
@@ -42,6 +53,48 @@ impl FromRequest for User {
     match req.extensions().get::<User>() {
       Some(user) => ok(user.clone()),
       None => err(AppError::unauthorized()),
+    }
+  }
+}
+
+impl Into<&str> for RoleEnum {
+  fn into(self: Self) -> &'static str {
+    match self {
+      Self::Admin => "admin",
+      Self::Employee => "employee",
+    }
+  }
+}
+
+impl TryFrom<&str> for RoleEnum {
+  type Error = AppError;
+  fn try_from(s: &str) -> Result<RoleEnum, Self::Error> {
+    match s {
+      "admin" => Ok(Self::Admin),
+      "employee" => Ok(Self::Employee),
+      _ => Err(AppError::bad_request()),
+    }
+  }
+}
+
+impl Into<&str> for StatusEnum {
+  fn into(self: Self) -> &'static str {
+    match self {
+      Self::Active => "active",
+      Self::Inactive => "inactive",
+      Self::Deleted => "deleted",
+    }
+  }
+}
+
+impl TryFrom<&str> for StatusEnum {
+  type Error = AppError;
+  fn try_from(s: &str) -> Result<StatusEnum, Self::Error> {
+    match s {
+      "active" => Ok(Self::Active),
+      "inactive" => Ok(Self::Inactive),
+      "deleted" => Ok(Self::Deleted),
+      _ => Err(AppError::bad_request()),
     }
   }
 }
