@@ -1,3 +1,4 @@
+use crate::db::model::destination::VisibilityEnum;
 use crate::db::schema::destinations;
 use crate::db::Db;
 use diesel::prelude::*;
@@ -10,7 +11,7 @@ pub fn available_for_user(
     destinations::dsl::isReviewed.eq(true).and(
       destinations::dsl::ownerId
         .eq(user_id)
-        .or(destinations::dsl::visibility.eq("public")),
+        .or(destinations::dsl::visibility.eq(Into::<&str>::into(VisibilityEnum::Public))),
     ),
   )
 }

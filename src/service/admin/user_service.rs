@@ -1,5 +1,5 @@
 use crate::applib::errors::AppError;
-use crate::db::model::user::{NewUser, UpdateUser, User};
+use crate::db::model::user::{NewUser, RoleEnum, StatusEnum, UpdateUser, User};
 use crate::db::schema::users;
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
@@ -13,6 +13,8 @@ pub async fn admin_create_user(
   user_json: web::Json<NewUser>,
 ) -> Result<(), AppError> {
   let mut new_user: NewUser = user_json.into_inner();
+
+  RoleEnum::try_from(new_user.role.as_str())?;
 
   new_user.password =
     hash(new_user.password, DEFAULT_COST).map_err(|_| AppError::internal_server_error())?;
@@ -81,6 +83,14 @@ pub async fn admin_update_user(
   user_json: web::Json<UpdateUser>,
 ) -> Result<(), AppError> {
   let mut update_user: UpdateUser = user_json.into_inner();
+
+  if let Some(user_role) = &update_user.role {
+    RoleEnum::try_from(user_role.as_str())?;
+  }
+
+  if let Some(user_status) = &update_user.status {
+    StatusEnum::try_from(user_status.as_str())?;
+  }
 
   if let Some(plain_text_password) = update_user.password {
     update_user.password =

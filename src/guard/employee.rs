@@ -1,4 +1,4 @@
-use crate::db::model::user::User;
+use crate::db::model::user::{RoleEnum, User};
 use actix_web::guard::GuardContext;
 
 pub fn employee_guard(ctx: &GuardContext) -> bool {
@@ -7,7 +7,7 @@ pub fn employee_guard(ctx: &GuardContext) -> bool {
   if user_optional.is_none() {
     return false;
   }
-  if user_optional.unwrap().role != "employee" {
+  if user_optional.unwrap().role != Into::<&str>::into(RoleEnum::Employee) {
     return false;
   }
   return true;
