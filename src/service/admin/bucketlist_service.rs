@@ -25,7 +25,7 @@ pub async fn admin_get_favorite_bucketlist_items(
       .inner_join(users::table)
       .inner_join(destinations::table)
       .filter(users::dsl::status.eq(Into::<&str>::into(StatusEnum::Active)))
-      .order_by(bucketlist_items::dsl::isFavorite.desc())
+      .order_by(bucketlist_items::dsl::isFavorite.asc())
       .select((BucketlistItem::as_select(), Destination::as_select()))
       .load::<(BucketlistItem, Destination)>(&mut db_connection)
       .map_err(|_| AppError::internal_server_error())
