@@ -1,6 +1,6 @@
 use crate::applib::errors::AppError;
 use crate::db::model::user::{NewUser, RoleEnum, StatusEnum, UpdateUser, User};
-use crate::db::schema::users;
+use crate::db::schema::{users, sessions};
 use crate::db::schema::users::dsl::*;
 use crate::db::DbPool;
 use crate::dto::get_user_dto::GetUserDTO;
@@ -101,11 +101,17 @@ pub async fn admin_update_user(
     let mut db_connection = db_pool
       .get()
       .map_err(|_| AppError::internal_server_error())?;
-
-    diesel::update(users.filter(id.eq(user_id)))
-      .set(update_user)
-      .execute(&mut db_connection)
-      .map_err(|_| AppError::internal_server_error())
+    
+    db_connection.transaction::<_, AppError, _>(|db_connection| {
+      diesel::delete(sessions::table)
+        .filter(sessions::dsl::userId.eq(user_id))
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())?;
+      diesel::update(users.filter(id.eq(user_id)))
+        .set(update_user)
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())
+    })
   })
   .await??;
 
