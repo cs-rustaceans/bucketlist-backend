@@ -69,6 +69,14 @@ impl AppError {
     }
   }
 
+  pub fn user_inactive_or_deleted() -> Self {
+    Self {
+      status: StatusCode::UNAUTHORIZED,
+      code: "UserInactiveOrDeleted".to_string(),
+      message: "User account is not active or is deleted".to_string(),
+    }
+  }
+
   // bucketlist items
 
   pub fn destination_is_not_reviewed() -> Self {
