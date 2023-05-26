@@ -1,7 +1,7 @@
 use crate::applib::errors::AppError;
 use crate::db::model::user::{NewUser, RoleEnum, StatusEnum, UpdateUser, User};
-use crate::db::schema::{users, sessions};
 use crate::db::schema::users::dsl::*;
+use crate::db::schema::{sessions, users};
 use crate::db::DbPool;
 use crate::dto::get_user_dto::GetUserDTO;
 use actix_web::web;
@@ -89,7 +89,10 @@ pub async fn admin_update_user(
   }
 
   if let Some(user_status) = &update_user.status {
-    StatusEnum::try_from(user_status.as_str())?;
+    let user_status = StatusEnum::try_from(user_status.as_str())?;
+    if user_status == StatusEnum::Deleted {
+      return Err(AppError::use_delete_endpoint_instead());
+    }
   }
 
   if let Some(plain_text_password) = update_user.password {
@@ -101,7 +104,7 @@ pub async fn admin_update_user(
     let mut db_connection = db_pool
       .get()
       .map_err(|_| AppError::internal_server_error())?;
-    
+
     db_connection.transaction::<_, AppError, _>(|db_connection| {
       diesel::delete(sessions::table)
         .filter(sessions::dsl::userId.eq(user_id))

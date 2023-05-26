@@ -43,6 +43,7 @@ pub struct UpdateDestination {
   pub longitude: Option<f64>,
 }
 
+#[derive(Eq, PartialEq)]
 pub enum VisibilityEnum {
   Public,
   Private,

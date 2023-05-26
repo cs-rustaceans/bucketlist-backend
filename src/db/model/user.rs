@@ -31,11 +31,13 @@ pub struct UpdateUser {
   pub status: Option<String>,
 }
 
+#[derive(Eq, PartialEq)]
 pub enum RoleEnum {
   Admin,
   Employee,
 }
 
+#[derive(Eq, PartialEq)]
 pub enum StatusEnum {
   Active,
   Inactive,

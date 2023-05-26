@@ -47,8 +47,16 @@ impl AppError {
   pub fn bad_request() -> Self {
     Self {
       status: StatusCode::BAD_REQUEST,
-      code: "Bad request".to_string(),
+      code: "BadRequest".to_string(),
       message: "Bad request.".to_string(),
+    }
+  }
+
+  pub fn use_delete_endpoint_instead() -> Self {
+    Self {
+      status: StatusCode::BAD_REQUEST,
+      code: "UseDeleteEndpointInstead".to_string(),
+      message: "Please use the delete endpoint instead for this kind of operation".to_string(),
     }
   }
 
