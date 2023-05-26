@@ -15,8 +15,19 @@ async fn employee_change_password(
   Ok(HttpResponse::Ok().into())
 }
 
+pub async fn employee_make_account_inactive(
+  db_pool: web::Data<DbPool>,
+  user: User,
+) -> Result<HttpResponse, AppError> {
+  user_service::employee_make_account_inactive(db_pool, user).await?;
+  Ok(HttpResponse::Ok().into())
+}
+
 pub fn configure_routes(cfg: &mut web::ServiceConfig) {
   cfg
     .service(web::resource("/me").route(web::get().to(common::user::get_user)))
-    .service(web::resource("/change-password").route(web::post().to(employee_change_password)));
+    .service(web::resource("/change-password").route(web::post().to(employee_change_password)))
+    .service(
+      web::resource("/make-account-inactive").route(web::post().to(employee_make_account_inactive)),
+    );
 }

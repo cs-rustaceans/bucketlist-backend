@@ -1,4 +1,5 @@
 use crate::applib::errors::AppError;
+use crate::db::model::user::StatusEnum;
 use crate::db::model::user::User;
 use crate::db::schema::sessions;
 use crate::db::schema::users;
@@ -43,6 +44,36 @@ pub async fn employee_change_password(
       diesel::update(users::table)
         .filter(users::dsl::id.eq(user.id))
         .set(update_user)
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())
+    })
+  })
+  .await??;
+
+  // Not sure how this would happend
+  if row_count == 0 {
+    Err(AppError::not_found(Some(String::from("User"))))
+  } else {
+    Ok(())
+  }
+}
+
+pub async fn employee_make_account_inactive(
+  db_pool: web::Data<DbPool>,
+  user: User,
+) -> Result<(), AppError> {
+  let row_count: usize = web::block(move || {
+    let mut db_connection = db_pool
+      .get()
+      .map_err(|_| AppError::internal_server_error())?;
+
+    db_connection.transaction::<_, AppError, _>(|db_connection| {
+      diesel::delete(sessions::table)
+        .filter(sessions::dsl::userId.eq(user.id))
+        .execute(db_connection)?;
+      diesel::update(users::table)
+        .filter(users::dsl::id.eq(user.id))
+        .set(users::dsl::status.eq(Into::<&str>::into(StatusEnum::Inactive)))
         .execute(db_connection)
         .map_err(|_| AppError::internal_server_error())
     })
