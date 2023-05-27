@@ -1,7 +1,7 @@
 use crate::applib::errors::AppError;
 use crate::db::model::user::{NewUser, RoleEnum, StatusEnum, UpdateUser, User};
-use crate::db::schema::users;
 use crate::db::schema::users::dsl::*;
+use crate::db::schema::{bucketlist_items, sessions, users};
 use crate::db::DbPool;
 use crate::dto::get_user_dto::GetUserDTO;
 use actix_web::web;
@@ -89,7 +89,10 @@ pub async fn admin_update_user(
   }
 
   if let Some(user_status) = &update_user.status {
-    StatusEnum::try_from(user_status.as_str())?;
+    let user_status = StatusEnum::try_from(user_status.as_str())?;
+    if user_status == StatusEnum::Deleted {
+      return Err(AppError::use_delete_endpoint_instead());
+    }
   }
 
   if let Some(plain_text_password) = update_user.password {
@@ -102,10 +105,16 @@ pub async fn admin_update_user(
       .get()
       .map_err(|_| AppError::internal_server_error())?;
 
-    diesel::update(users.filter(id.eq(user_id)))
-      .set(update_user)
-      .execute(&mut db_connection)
-      .map_err(|_| AppError::internal_server_error())
+    db_connection.transaction::<_, AppError, _>(|db_connection| {
+      diesel::delete(sessions::table)
+        .filter(sessions::dsl::userId.eq(user_id))
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())?;
+      diesel::update(users.filter(id.eq(user_id)))
+        .set(update_user)
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())
+    })
   })
   .await??;
 
@@ -122,9 +131,20 @@ pub async fn admin_delete_user(db_pool: web::Data<DbPool>, user_id: u64) -> Resu
       .get()
       .map_err(|_| AppError::internal_server_error())?;
 
-    diesel::delete(users.filter(id.eq(user_id)))
-      .execute(&mut db_connection)
-      .map_err(|_| AppError::internal_server_error())
+    db_connection.transaction::<_, AppError, _>(|db_connection| {
+      diesel::delete(bucketlist_items::table)
+        .filter(bucketlist_items::dsl::ownerId.eq(user_id))
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())?;
+      diesel::delete(sessions::table)
+        .filter(sessions::dsl::userId.eq(user_id))
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())?;
+      diesel::update(users.filter(id.eq(user_id)))
+        .set(status.eq(Into::<&str>::into(StatusEnum::Deleted)))
+        .execute(db_connection)
+        .map_err(|_| AppError::internal_server_error())
+    })
   })
   .await??;
 

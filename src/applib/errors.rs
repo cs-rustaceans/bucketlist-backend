@@ -47,8 +47,16 @@ impl AppError {
   pub fn bad_request() -> Self {
     Self {
       status: StatusCode::BAD_REQUEST,
-      code: "Bad request".to_string(),
+      code: "BadRequest".to_string(),
       message: "Bad request.".to_string(),
+    }
+  }
+
+  pub fn use_delete_endpoint_instead() -> Self {
+    Self {
+      status: StatusCode::BAD_REQUEST,
+      code: "UseDeleteEndpointInstead".to_string(),
+      message: "Please use the delete endpoint instead for this kind of operation".to_string(),
     }
   }
 
@@ -66,6 +74,14 @@ impl AppError {
       status: StatusCode::UNAUTHORIZED,
       code: "Unauthorized".to_string(),
       message: "Unauthorized to access resource.".to_string(),
+    }
+  }
+
+  pub fn user_inactive_or_deleted() -> Self {
+    Self {
+      status: StatusCode::UNAUTHORIZED,
+      code: "UserInactiveOrDeleted".to_string(),
+      message: "User account is not active or is deleted".to_string(),
     }
   }
 

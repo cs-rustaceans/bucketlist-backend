@@ -3,6 +3,7 @@ use crate::applib::errors::AppError;
 use crate::db::last_insert_id;
 use crate::db::model::session::NewSession;
 use crate::db::model::session::Session;
+use crate::db::model::user::StatusEnum;
 use crate::db::model::user::User;
 use crate::db::schema::sessions;
 use crate::db::schema::users;
@@ -46,6 +47,10 @@ pub async fn login(
     }
   })
   .await??;
+
+  if user.status != Into::<&str>::into(StatusEnum::Active) {
+    return Err(AppError::user_inactive_or_deleted());
+  }
 
   let new_session = NewSession {
     user_id: user.id,
