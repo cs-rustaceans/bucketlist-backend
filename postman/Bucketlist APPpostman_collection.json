@@ -1,0 +1,774 @@
+{
+	"info": {
+		"_postman_id": "10dc3c59-f03e-4a29-af65-e3cf00aabab9",
+		"name": "Bucketlist APP",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26814834"
+	},
+	"item": [
+		{
+			"name": "admin",
+			"item": [
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "Get current logged in (admin) user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/users/me",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										"me"
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\nResponseDTO's\n\n---\n\n``` json\n{\n    \"id\": u64,\n    \"role\": String,\n    \"email\": String\n}\n\n```"
+							},
+							"response": []
+						},
+						{
+							"name": "Post user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"role\": \"admin\",\n    \"email\": \"admin2@admin\",\n    \"password\": \"admin2\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/admin/users",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"users"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n### NewUser\n\n``` json\n{\n    \"role\": String,\n    \"email\": String,\n    \"password\": String\n}\n\n```\n\n## Response DTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Get users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/users",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"users"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n``` json\n[\n    {\n        \"id\": u64,\n        \"role\": String,\n        \"email\": String\n    }\n]\n\n```"
+							},
+							"response": []
+						},
+						{
+							"name": "Get user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/users/:id",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### User\n\n``` json\n{\n    \"id\": u64,\n    \"role\": String,\n    \"email\": String,\n}\n\n```\n\n## Usage\n\n---\n\n`GET /admin/user/:id`\n\n- Does not require anything in the Request body.\n- If it succeeds, it returns `HttpStatusOk` and an `User` with the specified id in the Response body.\n- If any error occurs, returns `HttpErrorImATeapot` and a `String` containing the error message."
+							},
+							"response": []
+						},
+						{
+							"name": "Update user",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/users/:id",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n### NewUser\n\n``` json\n{\n    \"role\": Option<String>,\n    \"email\": Option<String>,\n    \"password\": Option<String>\n}\n\n```\n\n## Response DTO's\n\n---\n\n## Usage\n\n---\n\n`UPDATE /admin/users/:id`\n\n- Requires a `NewUser` in the Request body.\n- If it succeeds, returns `HttpStatusOk` status code and a String in the Response body with the value `User updated`.\n- If any error occurs, returns `HttpErrorImATeapot` and a `String` containing the error message."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete user",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/users/:id",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"users",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "1"
+										}
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### Usage\n\n---\n\n`DELETE /admin/user/:id`\n\n- Does not require anything in the Request body.\n- If it succeeds, it returns `HttpStatusOk` and a String with the value of `User deleted` in the Response body.\n- If any error occurs, returns `HttpErrorImATeapot` and a `String` containing the error message."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "destinations",
+					"item": [
+						{
+							"name": "Get destinations",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/destinations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"destinations"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### Destination\n\n``` json\n{\n    \"id\": u64,\n    \"owner_id\": u64,\n    \"visiblity\": \"public\"|\"private\"\n    \"is_reviewed\": bool,\n    \"name\": String,\n    \"latitude\": f64,\n    \"longitude\": f64\n}\n\n```\n\n## Usage\n\n---\n\n`GET /admin/destinations`\n\n- Does not require anything in the Request body.\n- If it succeeds, it returns `HttpStatusOk` and a `List` containing all the users(`Destination`) of the application in the Response body.\n- If any error occurs, returns the appropriate error code and a `String` containing the error message."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete destination by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/destinations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"destinations"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### Destination\n\n## Usage\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Create destination",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"owner_id\": 1,\n    \"visibility\": \"public\",\n    \"is_reviewed\": false,\n    \"name\": \"test_postman\",\n    \"latitude\": 2.4,\n    \"longitude\": 2.3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/admin/destinations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"destinations"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n### NewDestination\n\n``` json\n{\n    \"owner_id\": u64,\n    \"visibility\": \"public\"|\"private\",\n    \"is_reviewed\": bool,\n    \"name\": String,\n    \"latitude\": f64,\n    \"longitude\": f64\n}\n\n```\n\n## Response DTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Update destination by id",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"owner_id\": 1,\n    \"visibility\": \"public\",\n    \"is_reviewed\": false,\n    \"name\": \"test_postman\",\n    \"latitude\": 2.4,\n    \"longitude\": 2.3\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/admin/destinations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"destinations"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n### UpdateDestination\n\n``` json\n{\n    \"owner_id\": Option<u64>,\n    \"visibility\": Option<\"public\"|\"private\">,\n    \"is_reviewed\": Option<bool>,\n    \"name\": Option<String>,\n    \"latitude\": Option<f64>,\n    \"longitude\": Option<f64>\n}\n\n```\n\n\n## Response DTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Get unreviewed destinations",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/destinations/unreviewed",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"destinations",
+										"unreviewed"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### Destination\n\n``` json\n{\n    \"id\": u64,\n    \"owner_id\": u64,\n    \"visiblity\": \"public\"|\"private\"\n    \"is_reviewed\": bool,\n    \"name\": String,\n    \"latitude\": f64,\n    \"longitude\": f64\n}\n\n```\n\n## Usage\n\n---\n\n`GET /admin/destinations/unreviewed`\n\n- Does not require anything in the Request body.\n- If it succeeds, it returns `HttpStatusOk` and a `List` containing all the users(`Destination`) of the application in the Response body.\n- If any error occurs, returns the appropriate error code and a `String` containing the error message."
+							},
+							"response": []
+						},
+						{
+							"name": "Get destination by id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/admin/destinations/:id",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"admin",
+										"destinations",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### Destination\n\n``` json\n{\n    \"id\": u64,\n    \"owner_id\": u64,\n    \"visiblity\": \"public\"|\"private\"\n    \"is_reviewed\": bool,\n    \"name\": String,\n    \"latitude\": f64,\n    \"longitude\": f64\n}\n\n```\n\n## Usage\n\n---\n\n`GET /admin/destinations/:id`\n\n- Does not require anything in the Request body.\n- If it succeeds, it returns `HttpStatusOk` and a `List` containing all the users(`Destination`) of the application in the Response body.\n- If any error occurs, returns the appropriate error code and a `String` containing the error message."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "bucketlist-items",
+					"item": [
+						{
+							"name": "get favorite bucketlist items",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/admin/bucketlist-items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"admin",
+										"bucketlist-items"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "employee",
+			"item": [
+				{
+					"name": "destinations",
+					"item": [
+						{
+							"name": "Get available destinations",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/destinations",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"destinations"
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### Destination\n\n``` json\n{\n    \"id\": u64,\n    \"owner_id\": u64,\n    \"visiblity\": \"public\"|\"private\"\n    \"is_reviewed\": bool,\n    \"name\": String,\n    \"latitude\": f64,\n    \"longitude\": f64\n}\n\n```\n\n## Usage\n\n---\n\n- Returns a list with all destinations which are available to the current employee\n- A destination is available for an employee if it is reviewed by an admin, and either it is private and is owned by him, or it is public"
+							},
+							"response": []
+						},
+						{
+							"name": "Get single available destination",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/destinations/:id",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"destinations",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "## Request DTO's\n\n---\n\n## Response DTO's\n\n---\n\n### Destination\n\n``` json\n{\n    \"id\": u64,\n    \"owner_id\": u64,\n    \"visiblity\": \"public\"|\"private\"\n    \"is_reviewed\": bool,\n    \"name\": String,\n    \"latitude\": f64,\n    \"longitude\": f64\n}\n\n```\n\n## Usage\n\n---\n\n- Returns a list with all destinations which are available to the current employee\n- A destination is available for an employee if it is reviewed by an admin, and either it is private and is owned by him, or it is public"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "Get current logged in (employee)",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/users/me",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"users",
+										"me"
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\nResponseDTO's\n\n---\n\n``` json\n{\n    \"id\": u64,\n    \"role\": String,\n    \"email\": String,\n    \"password\": String\n}\n\n```"
+							},
+							"response": []
+						},
+						{
+							"name": "change password",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"old_password\": \"password-updated\",\n    \"new_password\": \"password\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/employee/users/change-password",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"users",
+										"change-password"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Make account inactive",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/users/make-account-inactive",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"users",
+										"make-account-inactive"
+									]
+								},
+								"description": "Makes the logged in employee account inactive."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "bucketlist-items",
+					"item": [
+						{
+							"name": "Get bucketlist for current user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items"
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\nResponseDTO's\n\n---\n\n``` json\n[\n    {\n        \"id\": u64,\n        \"destination_id\": u64,\n        \"owner_id\": u64,\n        \"start_date\": ISODate,\n        \"end_date\": ISODate,\n        \"is_favorite\": bool,\n        \"destination\": DestinationDTO\n    }\n]\n\n```"
+							},
+							"response": []
+						},
+						{
+							"name": "Get bucketlist item for current user",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items/:id",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\nResponseDTO's\n\n---\n\n``` json\n{\n    \"id\": u64,\n    \"destination_id\": u64,\n    \"owner_id\": u64,\n    \"start_date\": ISODate,\n    \"end_date\": ISODate,\n    \"is_favorite\": bool,\n    \"destination\": DestinationDTO\n}\n\n```"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete bucketlist item",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items/:id",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\nResponseDTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Make bucketlist item's destination public",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items/:id/make-public",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items",
+										":id",
+										"make-public"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\nResponseDTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Make bucketlist item's destination favorite",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items/:id/make-favorite",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items",
+										":id",
+										"make-favorite"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": null
+										}
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\nResponseDTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Add bucketlist item using available destination",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"destination_id\": 4,\n    \"start_date\": \"2023-10-02T00:00:00\",\n    \"end_date\": \"2023-11-03T00:00:00\"\n\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items/add/from-available",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items",
+										"add",
+										"from-available"
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\n``` json\n{\n    \"destination_id\": u64,\n    \"start_date\": ISODate,\n    \"end_date\": ISODate\n}\n\n```\n\nResponseDTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Add bucketlist item using private list",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"latitude\": 2.3,\n    \"longitude\": 3.2,\n    \"name\": \"test from private\",\n    \"start_date\": \"2023-10-02T00:00:00\",\n    \"end_date\": \"2023-11-03T00:00:00\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items/add/with-private-list",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items",
+										"add",
+										"with-private-list"
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\n``` json\n{\n    \"latitude\": f64,\n    \"longitude\": f64,\n    \"name\": String,\n    \"start_date\": ISODate,\n    \"end_date\": ISODate\n}\n\n```\n\nResponseDTO's\n\n---"
+							},
+							"response": []
+						},
+						{
+							"name": "Add bucketlist item using private list Copy",
+							"request": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\n    \"start_date\": \"2023-10-02T00:00:00\",\n    \"end_date\": \"2023-11-03T00:00:00\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{API_URL}}/employee/bucketlist-items/add/with-private-list",
+									"host": [
+										"{{API_URL}}"
+									],
+									"path": [
+										"employee",
+										"bucketlist-items",
+										"add",
+										"with-private-list"
+									]
+								},
+								"description": "RequestDTO's\n\n---\n\n``` json\n{\n    \"start_date\": ISODate,\n    \"end_date\": ISODate\n}\n\n```\n\nResponseDTO's\n\n---"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"const body = pm.response.json();\r",
+							"pm.environment.set('authToken', body.token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin@admin\",\n    \"password\": \"password\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{API_URL}}/login",
+					"host": [
+						"{{API_URL}}"
+					],
+					"path": [
+						"login"
+					]
+				},
+				"description": "## Request DTO's\n\n---\n\n### LoginForm\n\n``` json\n{\n    \"email\": String,\n    \"password\": String\n}\n\n```\n\n## Response DTO's\n\n---\n\n```json\n   \"token\": String\n```\n\n## Usage"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
