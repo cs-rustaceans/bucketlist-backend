@@ -1,3 +1,10 @@
+The backend of our Software Engineering's laboratory Bucketlist Application.
+Check the wiki for more details(https://github.com/cs-rustaceans/bucketlist-wiki/wiki).
+The wiki should be especially helpful, since it contains useful diagrams.
+
+Written in rust using actix web, and diesel for migrations. The supported databse is MySQL.
+This backend features role-protected routes, login using JWT tokens, CRUD for all entities, and transactions to make everything concurrency-safe.
+
 ## Deployment
 
 Required tools:
@@ -11,64 +18,4 @@ For deployment, the following steps must be followed:
   - [OPTIONAL] Provide `PORT` either through `.env` or environmental variables. By default, the application will run on port `8080`
   - Run `diesel migration run`
   - Run `cargo run`
-
-## DTO
-
-The following DTO's are defined, to e used when interacting with the API provided by the application:
-
-### User
-```json
-{
-    "id": u64,
-    "role": String,
-    "email": String,
-    "password": String
-}
-```
-
-### NewUser
-```json
-{
-    "role": String,
-    "email": String,
-    "password": String
-}
-```
-
-### LoginForm
-```json
-{
-    "email": String,
-    "password": String
-}
-```
-
-## API
-
-The following endpoints are exposed by the application:
-
-- `GET /admin/users`
-  - Does not require anything in the Request body.
-  - Returns a `List` containing all the users(`User`) of the application in the Response body. 
-
-- `POST /admin/users`
-  - Requires a `NewUser` in the Request body
-  - Does not return anything in the Response body.
-
-- `GET /admin/users/{id}`
-  - Does not require anything in the Request body
-  - Returns an `User` with the specified id in the Response body. 
-
-- `UPDATE /admin/users/{id}`
-  - Requires a `NewUser` in the Request body
-  - Does not return anything in the Response body
-
-- `DELETE /admin/users/{id}`
-  - Does not require anything in the Request body
-  - Does not return anything in the Response body
-
-- `POST /login`
-  - Requires a `LoginForm` in the Request body
-  - Returns a `String` with the role of the specified user in the Response body.
-
 
