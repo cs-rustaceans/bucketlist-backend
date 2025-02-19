@@ -1,0 +1,35 @@
+
+# CAUTION
+# This compose file should only be used for local testing.
+
+services:
+  backend:
+    build:
+      context: .
+    environment:
+      DATABASE_URL: mysql://root:1235@db:3306/defaultdb
+      JWT_SECRET: asdf
+      PORT: 1235
+    ports:
+      - 1235:1235
+    depends_on:
+      db:
+        condition: service_healthy
+
+  adminer:
+    image: adminer
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+  
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: '1235'
+      MYSQL_DATABASE: defaultdb
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        interval: 3s
+        timeout: 5s
+        retries: 10

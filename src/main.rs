@@ -35,7 +35,7 @@ async fn main() -> Result<(), std::io::Error> {
       .app_data(web::Data::new(config.clone()))
       .configure(routes::configure_routes)
   })
-  .bind(("127.0.0.1", config_clone.port()))?
+  .bind(("0.0.0.0", config_clone.port()))?
   .run()
   .await
 }
