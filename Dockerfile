@@ -10,9 +10,7 @@ COPY *.toml .
 COPY *.lock .
 
 COPY src src
-COPY migrations migrations
 
-RUN diesel migration run
 RUN cargo build --release
 
 CMD ["./target/release/bucketlist-backend"]
