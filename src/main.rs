@@ -15,7 +15,10 @@ use r2d2;
 
 #[actix_web::main]
 async fn main() -> Result<(), std::io::Error> {
-  dotenv().expect("Could not load configuration");
+  match dotenv() {
+      Ok(_) => println!("Succesfully loaded .env"),
+      Err(err) => println!("Couldn't open .env, trying to continue past this {0}", err),
+  }
 
   let config = Config::new();
 

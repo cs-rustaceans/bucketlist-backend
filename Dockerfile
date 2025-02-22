@@ -1,4 +1,4 @@
-FROM rust:1.77.2-bullseye
+FROM rust:1.85.0-bullseye
 
 WORKDIR /code
 
@@ -12,10 +12,7 @@ COPY *.lock .
 COPY src src
 COPY migrations migrations
 
+RUN diesel migration run
 RUN cargo build --release
 
-RUN touch .env
-
-COPY docker-run.sh .
-RUN chmod u+x docker-run.sh
-CMD ["./docker-run.sh"]
+CMD ["./target/release/bucketlist-backend"]

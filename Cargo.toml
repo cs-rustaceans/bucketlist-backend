@@ -4,16 +4,16 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-actix-cors = {version = "0.6.4", default_features = false}
-actix-web = {version = "4.3.1", default_features = false, features = ["macros"]}
+actix-cors = {version = "0.7.0", default-features = false}
+actix-web = {version = "4.9.0", default-features = false, features = ["macros"]}
 bcrypt = {version = "0.14.0" }
-diesel = { version = "2.0.3", default_features = false, features = ["mysql", "r2d2", "chrono"] }
-chrono = { version = "0.4.24", default_features = false, features = ["serde"] }
-dotenv = { version = "0.15.0", default_features = false }
-r2d2 = { version = "0.8.10", default_features = false }
-serde = { version = "1.0.159", default_features = false, features = ["derive"] }
-serde_json = { version = "1.0.95", default_features = false }
-tokio = { version = "1.27.0", default_features = false }
-jsonwebtoken = { version = "=7.2", default_features = false }
-futures-util = { version = "0.3.28", default_features = false }
-actix-web-httpauth = { version = "0.8.0", default_features = false }
+diesel = { version = "2.0.3", default-features = false, features = ["mysql", "r2d2", "chrono"] }
+chrono = { version = "0.4.24", default-features = false, features = ["serde"] }
+dotenv = { version = "0.15.0", default-features = false }
+r2d2 = { version = "0.8.10", default-features = false }
+serde = { version = "1.0.159", default-features = false, features = ["derive"] }
+serde_json = { version = "1.0.95", default-features = false }
+tokio = { version = "1.27.0", default-features = false }
+jsonwebtoken = { version = "=7.2", default-features = false }
+futures-util = { version = "0.3.28", default-features = false }
+actix-web-httpauth = { version = "0.8.2", default-features = false }
