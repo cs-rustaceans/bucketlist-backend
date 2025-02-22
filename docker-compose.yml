@@ -1,0 +1,50 @@
+# Warning: the .env-example provided is for running the application directly, not for this docker-compose
+
+version: '3.8'
+
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: defaultdb
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  migrations:
+    image: willsquire/diesel-cli
+    entrypoint: ["diesel", "migration", "run", "--migration-dir", "/migrations"]
+    environment:
+      DATABASE_URL: mysql://root:${DATABASE_PASSWORD}@db:3306/defaultdb
+    volumes:
+      - ./migrations:/migrations
+    depends_on:
+      db:
+        condition: service_healthy
+
+  adminer:
+    image: adminer
+    ports:
+      - 8081:8081
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+  backend:
+    build:
+      context: .
+    environment:
+      DATABASE_URL: mysql://root:${DATABASE_PASSWORD}@db:3306/defaultdb
+      JWT_SECRET: ${JWT_SECRET}
+      PORT: 8080
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+
+volumes:
+  mysql_data:

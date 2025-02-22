@@ -92,8 +92,8 @@ pub async fn login(
     user_id: session.user_id,
     role: user.role,
     session_id: session.id,
-    iat: DateTime::<Utc>::from_utc(session.created_at, Utc),
-    exp: DateTime::<Utc>::from_utc(session.expires_at, Utc),
+    iat: DateTime::<Utc>::from_naive_utc_and_offset(session.created_at, Utc),
+    exp: DateTime::<Utc>::from_naive_utc_and_offset(session.expires_at, Utc),
   };
 
   let header = jsonwebtoken::Header::new(jsonwebtoken::Algorithm::HS256);
